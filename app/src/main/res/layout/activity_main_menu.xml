@@ -18,7 +18,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            android:text="Forest of Madness!"
+            android:text="Forest of Madness"
             android:textColor="#FFFFFF"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"

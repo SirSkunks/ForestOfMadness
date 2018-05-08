@@ -1,27 +1,31 @@
 package com.triosstudends.forestofmadness;
 
+import android.media.SoundPool;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
-import android.graphics.Point;
-import android.view.Display;
-import android.view.SurfaceHolder;
+public class GameView extends AppCompatActivity implements View.OnClickListener{
 
-public class GameView {
+    TextView score;
 
-    Display display;
-    Point size;
-    int screenWidth;
-    int screenHeight;
+    Button moveLeft;
+    Button moveRight;
 
-    //GameStats
-    int score;
-    int LastFrameTime;
-    int fps;
+    private SoundPool soundPool;
+    int levelTheme = -1;
 
-    private SurfaceHolder surfaceHolder;
-
-
+    int playerScore;
 
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game_view);
 
+
+    }
 }
