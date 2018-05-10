@@ -32,6 +32,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Button moveRight;
 
     CharacterView characterView;
+    Background background;
     Canvas canvas;
     Paint paint;
 
@@ -112,6 +113,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
          //Character Elements
          Bitmap bitmap;
+         Bitmap bgBmp;
          Character character;
 
          int vx = 0;
@@ -136,13 +138,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              BitmapFactory.Options options = new BitmapFactory.Options();
              options.inScaled = false;
              bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.jade);
+             bgBmp = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 
+             background = new Background(bgBmp);
              character = new Character(bitmap);
-             character.addAnimation("runRight", 0, 8, 7, 100,100, true);
-             character.addAnimation("runLeft", 15, 8, 7, 10, 10, true);
-             character.addAnimation("idle", 4, 1, 7, 100,100, true);
-             character.addAnimation("jumpRight", 10, 5, 7, 10, 10,true);
-             character.addAnimation("jumpLeft", 25, 5, 7, 10, 10, true);
+             character.addAnimation("runRight", 0, 8, 7, 64,64, true);
+             character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
+             character.addAnimation("idle", 8, 1, 7, 64,64, true);
+             character.addAnimation("jumpRight", 10, 5, 7, 64, 64,true);
+             character.addAnimation("jumpLeft", 25, 5, 7, 64, 64, true);
              character.setAnimation("idle");
 
              character.x = screenWidth / 2 - character.width / 2;
@@ -173,9 +177,12 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public boolean onTouchEvent(MotionEvent event){
              switch (event.getAction() & MotionEvent.ACTION_MASK){
              case MotionEvent.ACTION_DOWN:
-                 vy = 5;
+                 vy = -5;
                  character.setAnimation("jumpRight");
                  break;
+                 case MotionEvent.ACTION_UP:
+                     vy = 5;
+                     character.setAnimation("jumpRight");
              }
              return true;
          }
@@ -191,6 +198,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  canvas = holder.lockCanvas();
                  canvas.drawColor(Color.argb(0,0,0,0));
 
+                 background.draw(canvas);
                  character.draw(canvas);
                  holder.unlockCanvasAndPost(canvas);
              }
