@@ -52,6 +52,18 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onResume(){
         super.onResume();
-        //soundPool.play(menuTheme,1,1,0,-1,1);
+        soundPool.play(menuTheme,1,1,0,-1,1);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        soundPool.autoPause();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        soundPool.autoPause();
     }
 }

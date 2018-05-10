@@ -68,6 +68,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
         }
 
+        soundPool.play(levelTheme,1, 1,0,-1,1);
         playerScore = findViewById(R.id.playerScore);
 
         moveLeft = findViewById(R.id.mLeft);
@@ -82,15 +83,23 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     }
 
     @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        soundPool.autoPause();
+    }
+
+    @Override
     protected void onPause(){
         super.onPause();
         characterView.pause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         characterView.resume();
+        soundPool.play(levelTheme,1, 1,0,-1,1);
     }
 
     @Override
@@ -237,6 +246,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              thread = new Thread(this);
              thread.start();
              running = true;
+
          }
          public void pause(){
              running = false;
