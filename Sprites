@@ -1,0 +1,97 @@
+World Sprite Sheet
+Sunnessa Ormerod v3.0
+5/7/18
+updated 5/8/18
+Blank icons can be filled as project continues
+Top Row
+01.Platform 1  size = 64x64 y0 x0
+02.Platform 2  size = 64x64 y64 x0
+03.Platform 3  size = 64x64 y128 x0
+04.platform 4  size = 64x64 y192 x0
+05.platform 5  size = 64x64 y256 x0
+2nd Row
+06.Platform 6  size = 64x64 y0 x64
+07.Platform 7  size = 64x64 y64 x64
+08.Platform 8  size = 64x64 y128 x64
+09.Tree        size = 64x64 y192 x64
+10.bush        size = 64x64 y256 x64
+3rd Row
+11.Platform 9  size = 64x64 y0 x128
+12.platform 10 size = 64x64 y64 x128
+13.platform 11 size = 64c64 y128 x128
+14.Lg Rock1    size = 64x64 y192 x128
+15.Blank       size = 64x64 y256 x128
+4th Row
+16.Calm Icon   size = 64x64 y0 x192
+17.Disturbed   size = 64x64 y64 x192
+18.Rx Pill bottle size = 34x34 y128 x224, rock2 size = 34x34 y160 x224
+19.CoffeePot&Mug size = 34x34 y192 x224
+20.Blank
+5th Row
+21.Blank
+22.Blank
+23.Blank
+24.Blank
+25.Blank
+
+Jade Animations
+Top Row
+01.Jade Run right 01 size = 64x64 y0 x0
+02.Jade Run right 02 size = 64x64 y64 x0
+03.Jade Run right 03 size = 64x64 y128 x0
+04.Jade Run right 04 size = 64x64 y192 x0
+05.Jade Run right 05 size = 64x64 y256 x0
+2nd Row
+06.Jade Run Right 06 size 06 size = 64x64 y0 x64
+07.Jade Run Right 07 size 07 size = 64x64 y64 x64
+08.Jade Run Right 08 size 08 size = 64x64 y128 x64
+09.Jade Idle Right 09 size = 64x64 y192 x64
+10.Jade Idle Left  10 size = 64x64 y0256 x64
+3rd Row (Jump animation)
+11.Jade Jump Right 01 size = 64x64 y0 x128
+12.Jade Jump Right 02 size = 64x64 y64 x128
+13.Jade Jump Right 03 size = 64x64 y128 x128
+14.Jade Jump Right 04 size = 64x64 y192 x128
+15.Jade Jump Right 05 size = 64x64 y256 x128
+4th Row
+16.Jade Run Left 01 size = 64x64 y0 x192
+17.Jade Run Left 02 size = 64x64 y64 x192
+18.Jade Run Left 03 size = 64x64 y128 x192
+19.Jade Run Left 04 size = 64x64 y192 x192
+20.Jade Run Left 05 size = 64x64 y256 x192
+5th Row
+21.Jade Idle Right (same as icon 09) size = 64x64 y0 x256
+22.Jade Idle Left = (same as icon 10) 64x64 y64 x256
+23.Jade Run Left 06 size = 64x64 y128 x256
+24.Jade Run Left 07 size = 64x64 y192 x256
+25.Jade Run Left 08 size = 64x64 y256 x256
+6th Row
+26.Jade Jump Left 01 size = 64x64 y0 x320
+27.Jade Jump Left 02 size = 64x64 y64 x320
+28.Jade Jump Left 03 size = 64x64 y128 x320
+29.Jade Jump Left 04 size = 64x64 y192 x320
+30.Jade Jump Left 05 10:49 PM 2018-05-08size = 64x64 y256 x320
+7th Row
+31.Blank size = 64x64 y0 x384
+32.Blank size = 64x64 y64 x384
+33.Blank size = 64x64 y128 x384
+34.Blank size = 64x64 y192 x384
+35.Blank size = 64x64 y256 x384
+8th Row
+36.Blank size = 64x64 y0 x448
+37.Blank size = 64x64 y64 x448
+38.Blank size = 64x64 y128 x448
+39.Blank size = 64x64 y192 x448
+40.Blank size = 64x64 y256 x448
+9th Row
+41.Blank size = 64x64 y0 x512
+42.Blank size = 64x64 y64 x512
+43.Blank size = 64x64 y128 x512
+44.Blank size = 64x64 y192 x512
+45.Blank size = 64x64 y256 x512
+10th Row
+46.Blank size = 64x64 y0 x576
+47.Blank size = 64x64 y64 x576
+48.Blank size = 64x64 y128 x576
+49.Blank size = 64x64 y192 x576
+50.Blank size = 64x64 y256 x576
