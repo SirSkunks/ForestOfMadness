@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-public class GameView extends AppCompatActivity {
+public class GameView extends AppCompatActivity implements View.OnClickListener {
 
     TextView playerScore;
 
@@ -72,9 +72,11 @@ public class GameView extends AppCompatActivity {
         moveLeft = findViewById(R.id.mLeft);
         moveRight = findViewById(R.id.mRight);
 
-        moveLeft.setOnClickListener((View.OnClickListener) moveLeft);
-        moveRight.setOnClickListener((View.OnClickListener) moveRight);
+        moveLeft.setOnClickListener(this);
+        moveRight.setOnClickListener(this);
 
+        characterView = new CharacterView(this);
+        setContentView(characterView);
 
     }
 
@@ -90,7 +92,10 @@ public class GameView extends AppCompatActivity {
         characterView.resume();
     }
 
-
+    @Override
+    public void onClick(View v) {
+        onClick(characterView);
+    }
 
 
     class CharacterView extends SurfaceView implements Runnable {
@@ -133,11 +138,12 @@ public class GameView extends AppCompatActivity {
              bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.jade);
 
              character = new Character(bitmap);
-             character.addAnimation("runRight", 0, 8, 7, 64,64, true);
-             //character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
-             character.addAnimation("idle", 8, 1, 7, 64,64, true);
-             character.addAnimation("jumpRight", 10, 5, 7, 64, 64,true);
-             //character.addAnimation("jumpLeft", 25, 5, 7, 64, 64, true);
+             character.addAnimation("runRight", 0, 8, 7, 100,100, true);
+             character.addAnimation("runLeft", 15, 8, 7, 10, 10, true);
+             character.addAnimation("idle", 4, 1, 7, 100,100, true);
+             character.addAnimation("jumpRight", 10, 5, 7, 10, 10,true);
+             character.addAnimation("jumpLeft", 25, 5, 7, 10, 10, true);
+             character.setAnimation("idle");
 
              character.x = screenWidth / 2 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
@@ -147,13 +153,18 @@ public class GameView extends AppCompatActivity {
              if(playing){
                  switch (v.getId()){
                  case R.id.mLeft:
-                     //TODO: movement left.
+                     vx = -5;
+                     character.setAnimation("runLeft");
                      break;
                  case R.id.mRight:
-                     //TODO: movement Right.
                      vx = 5;
                      character.setAnimation("runRight");
                      break;
+                     case MotionEvent.ACTION_UP:
+                         vy = 0;
+                         vx = 0;
+                         character.setAnimation("runRight");
+                         break;
                  }
              }
          }
@@ -178,12 +189,9 @@ public class GameView extends AppCompatActivity {
          private void drawCanvas(){
              if (holder.getSurface().isValid()){
                  canvas = holder.lockCanvas();
-                 canvas.drawColor(Color.TRANSPARENT);
+                 canvas.drawColor(Color.argb(0,0,0,0));
 
                  character.draw(canvas);
-
-                 paint.setTextSize(30);//for testing purposes
-                 canvas.drawText("FPS: " + fps, 50, 35, paint);
                  holder.unlockCanvasAndPost(canvas);
              }
          }

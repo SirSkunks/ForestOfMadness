@@ -12,7 +12,7 @@ import android.widget.Button;
 
 import java.io.IOException;
 
-public class MainMenu extends AppCompatActivity implements View.OnClickListener {
+public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
     Button play;
     Button options;
@@ -32,25 +32,26 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
             descriptor = assetManager.openFd("titleTheme.mp3");
             menuTheme = soundPool.load(descriptor, 0);
-        }catch (IOException e){
+        } catch (IOException e) {
             //catches an exception.
         }
-        soundPool.play(menuTheme,1,1,0,-1,1);
+        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
 
         Button startGame = findViewById(R.id.play);
-        startGame.setOnClickListener((View.OnClickListener) play);
+
+        startGame.setOnClickListener(this);
+
+
     }
 
     @Override
     public void onClick (View v){
-        Intent i = new Intent(this, GameView.class);
-        startActivity(i);
+        startActivity(new Intent(MainMenu.this, GameView.class));
     }
-
 
     @Override
     public void onResume(){
         super.onResume();
-        soundPool.play(menuTheme,1,1,0,-1,1);
+        //soundPool.play(menuTheme,1,1,0,-1,1);
     }
 }
