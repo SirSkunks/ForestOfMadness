@@ -38,7 +38,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         soundPool.play(menuTheme,1,1,0,-1,1);
 
         Button startGame = findViewById(R.id.play);
-        startGame.setOnClickListener(this);
+        startGame.setOnClickListener((View.OnClickListener) play);
     }
 
     @Override

@@ -15,8 +15,8 @@ public class Character {
 
 
     // Sprite Sheet
-    int sheet_rows = 5;
-    int sheet_cols = 3;
+    int sheet_rows = 6;
+    int sheet_cols = 5;
 
     private final Bitmap bitmap;
     private int srcX = 0;
