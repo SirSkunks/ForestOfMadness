@@ -91,7 +91,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Intent i = new Intent(this,MainMenu.class)
+        Intent i = new Intent(this,MainMenu.class);
         startActivity(i);
 
 
