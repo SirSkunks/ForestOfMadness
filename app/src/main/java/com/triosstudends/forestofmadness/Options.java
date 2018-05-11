@@ -80,6 +80,12 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         super.onPause();
         soundPool.autoPause();
     }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+    }
 
     @Override
     public void onClick(View v) {
