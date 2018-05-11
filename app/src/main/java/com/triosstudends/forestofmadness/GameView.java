@@ -99,7 +99,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     }
 
     class CharacterView extends SurfaceView implements Runnable {
-        //System Elements
+
+         // System Elements
          boolean running = true;
          Thread thread = null;
          Display display;
@@ -142,14 +143,20 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              btnOne = BitmapFactory.decodeResource(getResources(),R.drawable.temp1);
              btnTwo = BitmapFactory.decodeResource(getResources(),R.drawable.temp2);
 
+             // Background placement
              background = new Background(bgBmp);
+
+             // Left button Creation
              buttonOne = new ButtonOne(btnOne);
              buttonOne.x =  screenWidth - buttonOne.width * 6;
              buttonOne.y = screenHeight - buttonOne.height;
+
+             // Right button Creation
              buttonTwo = new ButtonTwo(btnTwo);
              buttonTwo.x = screenWidth - buttonTwo.width;
              buttonTwo.y = screenHeight - buttonTwo.height;
 
+             // Character Creation and animations.
              character = new Character(bitmap);
              character.addAnimation("runRight", 0, 8, 7, 64,64, true);
              character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
@@ -169,31 +176,35 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
              switch (event.getAction() & MotionEvent.ACTION_MASK){
              case MotionEvent.ACTION_DOWN:
+                 // Check to see if the user touches within the left button
                  if (x >= buttonOne.x && x < (buttonOne.x + buttonOne.width)
                          && y >= buttonOne.y && y < (buttonOne.y + buttonOne.height)) {
                      vx = -5;
                      character.setAnimation("runLeft");
                  }
+                 // Check to see if the user touches within the right button
                  else if(x >= buttonTwo.x && x < (buttonTwo.x + buttonTwo.width)
                          && y >= buttonTwo.y && y < (buttonTwo.y + buttonTwo.height)){
                      vx = 5;
                      character.setAnimation("runRight");
                  }
+                 // Check to see if the user touches anywhere but the buttons
                  else if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
                          && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
                          x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
                                  && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
-                     vy = 0;
+                     vy = 0;// Temporarily set to 0 until more is added to the game.
                      character.setAnimation("jumpRight");
                  }
                  break;
                  case MotionEvent.ACTION_UP:
+                     // Stop character movement when
                      if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
                              && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
                              x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
                                      && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
                          vx = 0;
-                         vy = 0;
+                         vy = 0; // Temporarily set to 0 until more is added to the game.
                          character.setAnimation("idle");
                      }
              }
@@ -204,10 +215,14 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.x += vx;
              character.y += vy;
              character.update(deltaTime);
+
+             // Temporary level boundaries.
+             //if the character touches the bottom of the screen stop the movement
              if(character.y + character.height > screenHeight){
                  vy = 0;
                  character.setAnimation("idle");
              }
+             // if the character touches the top they go back down
              else if(character.y <= 0){
                  vy = 5;
              }

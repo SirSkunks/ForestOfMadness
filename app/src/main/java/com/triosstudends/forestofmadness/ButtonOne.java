@@ -19,7 +19,6 @@ class ButtonOne {
 
         width = bmp.getWidth();
         height = bmp.getHeight();
-
     }
 
     public void draw(Canvas canvas){

@@ -13,7 +13,6 @@ public class Character {
     int width;
     int height;
 
-
     // Sprite Sheet
     int sheet_rows = 6;
     int sheet_cols = 5;
@@ -40,7 +39,6 @@ public class Character {
 
         animations = new HashMap<String, Animation>();
     }
-
 
     public void update(long deltaTime){
         if (playing){
@@ -85,6 +83,7 @@ public class Character {
         currentFrame = currentAnimation.startFrame;
         currentFrameTime = 0;
         frameTime = 1000/ currentAnimation.fps;
+
         updateChar();
 
         playing = true;

@@ -19,12 +19,10 @@ class ButtonTwo {
 
         width = bmp.getWidth();
         height = bmp.getHeight();
-
     }
     public void draw(Canvas canvas){
         Rect srcRect = new Rect(scrX, scrY, scrX + width, scrY + height);
         Rect dstRect = new Rect(x, y, x + width, y + height);
         canvas.drawBitmap(bmp, srcRect, dstRect, null);
     }
-
 }

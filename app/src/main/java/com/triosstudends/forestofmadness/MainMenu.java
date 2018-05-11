@@ -15,7 +15,7 @@ import java.io.IOException;
 public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
     Button play;
-   Button options;
+    Button options;
 
     SoundPool soundPool;
     int menuTheme = -1;
@@ -38,7 +38,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         soundPool.play(menuTheme, 1, 1, 0, -1, 1);
 
         Button startGame = findViewById(R.id.play);
-
         startGame.setOnClickListener(this);
 
         Button loadOptions = findViewById(R.id.options);
@@ -48,9 +47,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick (View v){
         switch (v.getId()){
+            // Goes to the Game screen
             case R.id.play:
                 startActivity(new Intent(MainMenu.this, GameView.class));
                 break;
+            // Goes to the Options screen
             case R.id.options:
                 Intent o = new Intent(this,Options.class);
                 startActivity(o);

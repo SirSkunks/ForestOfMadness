@@ -20,7 +20,6 @@ public class Background {
 
         width = bmp.getWidth();
         height = bmp.getHeight();
-
     }
 
     public void draw(Canvas canvas){
@@ -28,5 +27,4 @@ public class Background {
         Rect dstRect = new Rect(x, y, x + width, y + height);
         canvas.drawBitmap(bmp, srcRect, dstRect, null);
     }
-
 }
