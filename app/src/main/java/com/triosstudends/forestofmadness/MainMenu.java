@@ -43,8 +43,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         Button loadOptions = findViewById(R.id.options);
         loadOptions.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -57,18 +55,24 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
                 Intent o = new Intent(this,Options.class);
                 startActivity(o);
                 break;
-
-
-
-
-
         }
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
         soundPool.play(menuTheme,1,1,0,-1,1);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        soundPool.autoPause();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        soundPool.autoPause();
     }
 }

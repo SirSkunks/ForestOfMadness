@@ -28,17 +28,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
     TextView playerScore;
 
-    Button moveLeft;
-    Button moveRight;
-
     CharacterView characterView;
     Background background;
+    ButtonOne buttonOne;
+    ButtonTwo buttonTwo;
     Canvas canvas;
     Paint paint;
 
     private SoundPool soundPool;
     int levelTheme = -1;
-
 
     int pScore;
     boolean playing = true;
@@ -68,36 +66,37 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
         }
 
+        soundPool.play(levelTheme,1, 1,0,-1,1);
         playerScore = findViewById(R.id.playerScore);
-
-        moveLeft = findViewById(R.id.mLeft);
-        moveRight = findViewById(R.id.mRight);
-
-        moveLeft.setOnClickListener(this);
-        moveRight.setOnClickListener(this);
 
         characterView = new CharacterView(this);
         setContentView(characterView);
+    }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         characterView.pause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         characterView.resume();
+        soundPool.play(levelTheme,1, 1,0,-1,1);
     }
 
     @Override
     public void onClick(View v) {
         onClick(characterView);
     }
-
 
     class CharacterView extends SurfaceView implements Runnable {
         //System Elements
@@ -110,10 +109,11 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          //Canvas Elements
          final SurfaceHolder holder;
 
-
          //Character Elements
          Bitmap bitmap;
          Bitmap bgBmp;
+         Bitmap btnOne;
+         Bitmap btnTwo;
          Character character;
 
          int vx = 0;
@@ -139,50 +139,63 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              options.inScaled = false;
              bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.jade);
              bgBmp = BitmapFactory.decodeResource(getResources(),R.drawable.background);
+             btnOne = BitmapFactory.decodeResource(getResources(),R.drawable.temp1);
+             btnTwo = BitmapFactory.decodeResource(getResources(),R.drawable.temp2);
 
              background = new Background(bgBmp);
+             buttonOne = new ButtonOne(btnOne);
+             buttonOne.x =  screenWidth - buttonOne.width * 6;
+             buttonOne.y = screenHeight - buttonOne.height;
+             buttonTwo = new ButtonTwo(btnTwo);
+             buttonTwo.x = screenWidth - buttonTwo.width;
+             buttonTwo.y = screenHeight - buttonTwo.height;
+
              character = new Character(bitmap);
              character.addAnimation("runRight", 0, 8, 7, 64,64, true);
              character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
              character.addAnimation("idle", 8, 1, 7, 64,64, true);
-             character.addAnimation("jumpRight", 10, 5, 7, 64, 64,true);
-             character.addAnimation("jumpLeft", 25, 5, 7, 64, 64, true);
+             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,true);
+             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, true);
              character.setAnimation("idle");
 
              character.x = screenWidth / 2 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
          }
 
-         public void onClick(View v){
-             if(playing){
-                 switch (v.getId()){
-                 case R.id.mLeft:
-                     vx = -5;
-                     character.setAnimation("runLeft");
-                     break;
-                 case R.id.mRight:
-                     vx = 5;
-                     character.setAnimation("runRight");
-                     break;
-                     case MotionEvent.ACTION_UP:
-                         vy = 0;
-                         vx = 0;
-                         character.setAnimation("runRight");
-                         break;
-                 }
-             }
-         }
-
          @Override
          public boolean onTouchEvent(MotionEvent event){
+             float x = event.getX();
+             float y = event.getY();
+
              switch (event.getAction() & MotionEvent.ACTION_MASK){
              case MotionEvent.ACTION_DOWN:
-                 vy = -5;
-                 character.setAnimation("jumpRight");
+                 if (x >= buttonOne.x && x < (buttonOne.x + buttonOne.width)
+                         && y >= buttonOne.y && y < (buttonOne.y + buttonOne.height)) {
+                     vx = -5;
+                     character.setAnimation("runLeft");
+                 }
+                 else if(x >= buttonTwo.x && x < (buttonTwo.x + buttonTwo.width)
+                         && y >= buttonTwo.y && y < (buttonTwo.y + buttonTwo.height)){
+                     vx = 5;
+                     character.setAnimation("runRight");
+                 }
+                 else if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
+                         && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
+                         x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
+                                 && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
+                     vy = 0;
+                     character.setAnimation("jumpRight");
+                 }
                  break;
                  case MotionEvent.ACTION_UP:
-                     vy = 5;
-                     character.setAnimation("jumpRight");
+                     if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
+                             && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
+                             x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
+                                     && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
+                         vx = 0;
+                         vy = 0;
+                         character.setAnimation("idle");
+                     }
              }
              return true;
          }
@@ -191,6 +204,13 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.x += vx;
              character.y += vy;
              character.update(deltaTime);
+             if(character.y + character.height > screenHeight){
+                 vy = 0;
+                 character.setAnimation("idle");
+             }
+             else if(character.y <= 0){
+                 vy = 5;
+             }
          }
 
          private void drawCanvas(){
@@ -199,6 +219,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  canvas.drawColor(Color.argb(0,0,0,0));
 
                  background.draw(canvas);
+                 buttonOne.draw(canvas);
+                 buttonTwo.draw(canvas);
                  character.draw(canvas);
                  holder.unlockCanvasAndPost(canvas);
              }
@@ -237,6 +259,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              thread = new Thread(this);
              thread.start();
              running = true;
+
          }
          public void pause(){
              running = false;
