@@ -1,6 +1,7 @@
 package com.triosstudends.forestofmadness;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 public class Options extends AppCompatActivity  implements View.OnClickListener{
 
-    Button play;
+    Button mainMenu;
     private SeekBar musicBar;
     private SeekBar effectBar;
     private AudioManager audioManager;
@@ -44,7 +45,8 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
 
 
-        play = findViewById(R.id.mainMenu);
+        mainMenu = findViewById(R.id.mainMenu);
+        mainMenu.setOnClickListener(this);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         initControls();
 
@@ -85,7 +87,8 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-
+        Intent i = new Intent(this,MainMenu.class)
+        startActivity(i);
 
 
 
