@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 import java.io.IOException;
 
 public class Options extends AppCompatActivity  implements View.OnClickListener{
-
+    // Declaring Seekbars and AudioManager
     Button mainMenu;
     private SeekBar musicBar;
     private SeekBar effectBar;
@@ -28,6 +28,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        //Load Sounds Pool
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         try {
             AssetManager assetManager = getAssets();
@@ -39,13 +40,14 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             //catches an exception.
         }
         soundPool.play(menuTheme,1,1,0,-1,1);
-
+        //Sets Onclick listner for Button To return to menu
         mainMenu = findViewById(R.id.mainMenu);
         mainMenu.setOnClickListener(this);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         initControls();
     }
     private void initControls(){
+        //Sets SeekBar max to system max volume as well as sets teh currnet bar level to the current system audi level.
       try{
             musicBar = findViewById(R.id.SbMusic);
             audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -66,6 +68,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
+                    //sets volume level to the progress of the seek bar
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress,0);
                 }
             });
@@ -89,6 +92,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        //load back to the main menu once the back button is clicked.
         Intent i = new Intent(this,MainMenu.class);
         startActivity(i);
     }
