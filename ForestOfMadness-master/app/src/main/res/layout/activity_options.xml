@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Options">
+
+
+    <Button
+        android:id="@+id/mainMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SbMusic" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="243dp"
+        android:layout_marginLeft="224dp"
+        android:layout_marginRight="243dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginTop="7dp"
+        android:text="Options"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="224dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginTop="20dp"
+        android:text="Sound Effects"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/SbEffects"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/musicVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="270dp"
+        android:layout_marginLeft="256dp"
+        android:layout_marginRight="270dp"
+        android:layout_marginStart="256dp"
+        android:layout_marginTop="16dp"
+        android:text="Music "
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/SbMusic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SbEffects" />
+
+    <SeekBar
+        android:id="@+id/SbEffects"
+        android:layout_width="307dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="22dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginLeft="171dp"
+        android:layout_marginRight="227dp"
+        android:layout_marginStart="171dp"
+        app:layout_constraintBottom_toTopOf="@+id/musicVolume"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <SeekBar
+        android:id="@+id/SbMusic"
+        android:layout_width="326dp"
+        android:layout_height="66dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/musicVolume" />
+
+</android.support.constraint.ConstraintLayout>
