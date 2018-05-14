@@ -1,5 +1,6 @@
 package com.triosstudends.forestofmadness;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
@@ -12,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -19,10 +21,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class GameView extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,8 +33,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
     CharacterView characterView;
     Background background;
-    ButtonOne buttonOne;
-    ButtonTwo buttonTwo;
+    ButtonLeft buttonLeft;
+    ButtonRight buttonRight;
+    Platforms platform;
     Canvas canvas;
     Paint paint;
 
@@ -50,7 +54,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_view);
 
         preferences = getSharedPreferences(dataName, MODE_PRIVATE);
         editor = preferences.edit();
@@ -63,7 +66,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             descriptor = assetManager.openFd("levelOneBgm.ogg");
             levelTheme = soundPool.load(descriptor, 0);
         }catch (IOException e){
-
+            e.printStackTrace();
         }
 
         soundPool.play(levelTheme,1, 1,0,-1,1);
@@ -95,7 +98,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        onClick(characterView);
+        //onClick(characterView);
     }
 
     class CharacterView extends SurfaceView implements Runnable {
@@ -110,11 +113,13 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          //Canvas Elements
          final SurfaceHolder holder;
 
-         //Character Elements
+         //Image Elements
          Bitmap bitmap;
          Bitmap bgBmp;
-         Bitmap btnOne;
-         Bitmap btnTwo;
+         Bitmap world;
+         Bitmap btnLeft;
+         Bitmap btnRight;
+
          Character character;
 
          int vx = 0;
@@ -140,21 +145,32 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              options.inScaled = false;
              bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.jade);
              bgBmp = BitmapFactory.decodeResource(getResources(),R.drawable.background);
-             btnOne = BitmapFactory.decodeResource(getResources(),R.drawable.temp1);
-             btnTwo = BitmapFactory.decodeResource(getResources(),R.drawable.temp2);
+             world = BitmapFactory.decodeResource(getResources(), R.drawable.worldsprites);
+             btnLeft = BitmapFactory.decodeResource(getResources(),R.drawable.temp1);
+             btnRight = BitmapFactory.decodeResource(getResources(),R.drawable.temp2);
 
              // Background placement
              background = new Background(bgBmp);
 
+             // Platform placement
+             platform = new Platforms(world);
+             platform.addAnimation("platform1", 0, 0, 0,64, 64, true);
+             platform.addAnimation("platform2", 1, 0, 0,64, 64, true);
+             platform.addAnimation("platform3", 2, 0, 0,64, 64, true);
+
+             // Pick-ups
+             platform = new Platforms(world);
+             //platform.addAnimation("pills", );
+
              // Left button Creation
-             buttonOne = new ButtonOne(btnOne);
-             buttonOne.x =  screenWidth - buttonOne.width * 6;
-             buttonOne.y = screenHeight - buttonOne.height;
+             buttonLeft = new ButtonLeft(btnLeft);
+             buttonLeft.x =  screenWidth - buttonLeft.width * 6 + 3;
+             buttonLeft.y = screenHeight - buttonLeft.height;
 
              // Right button Creation
-             buttonTwo = new ButtonTwo(btnTwo);
-             buttonTwo.x = screenWidth - buttonTwo.width;
-             buttonTwo.y = screenHeight - buttonTwo.height;
+             buttonRight = new ButtonRight(btnRight);
+             buttonRight.x = screenWidth - buttonRight.width;
+             buttonRight.y = screenHeight - buttonRight.height;
 
              // Character Creation and animations.
              character = new Character(bitmap);
@@ -169,6 +185,13 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.y = screenHeight / 2 - character.height / 2;
          }
 
+         public void platformGeneration(){
+             Random random = new Random();
+             int generate = random.nextInt(100) + 1;
+             if (generate <= 10){
+
+             }
+         }
          @Override
          public boolean onTouchEvent(MotionEvent event){
              float x = event.getX();
@@ -177,32 +200,32 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              switch (event.getAction() & MotionEvent.ACTION_MASK){
              case MotionEvent.ACTION_DOWN:
                  // Check to see if the user touches within the left button
-                 if (x >= buttonOne.x && x < (buttonOne.x + buttonOne.width)
-                         && y >= buttonOne.y && y < (buttonOne.y + buttonOne.height)) {
+                 if (x >= buttonLeft.x && x < (buttonLeft.x + buttonLeft.width)
+                         && y >= buttonLeft.y && y < (buttonLeft.y + buttonLeft.height)) {
                      vx = -5;
                      character.setAnimation("runLeft");
                  }
                  // Check to see if the user touches within the right button
-                 else if(x >= buttonTwo.x && x < (buttonTwo.x + buttonTwo.width)
-                         && y >= buttonTwo.y && y < (buttonTwo.y + buttonTwo.height)){
+                 else if(x >= buttonRight.x && x < (buttonRight.x + buttonRight.width)
+                         && y >= buttonRight.y && y < (buttonRight.y + buttonRight.height)){
                      vx = 5;
                      character.setAnimation("runRight");
                  }
                  // Check to see if the user touches anywhere but the buttons
-                 else if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
-                         && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
-                         x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
-                                 && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
+                 else if(x != buttonLeft.x && x != (buttonLeft.x + buttonLeft.width)
+                         && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
+                         x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
+                                 && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                      vy = 0;// Temporarily set to 0 until more is added to the game.
                      character.setAnimation("jumpRight");
                  }
                  break;
                  case MotionEvent.ACTION_UP:
                      // Stop character movement when
-                     if(x != buttonOne.x && x != (buttonOne.x + buttonOne.width)
-                             && y != buttonOne.y && y != (buttonOne.y + buttonOne.height) ||
-                             x != buttonTwo.x && x != (buttonTwo.x + buttonTwo.width)
-                                     && y != buttonTwo.y && y != (buttonTwo.y + buttonTwo.height)) {
+                     if(x != buttonLeft.x && x != (buttonLeft.x + buttonLeft.width)
+                             && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
+                             x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
+                                     && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                          vx = 0;
                          vy = 0; // Temporarily set to 0 until more is added to the game.
                          character.setAnimation("idle");
@@ -234,8 +257,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  canvas.drawColor(Color.argb(0,0,0,0));
 
                  background.draw(canvas);
-                 buttonOne.draw(canvas);
-                 buttonTwo.draw(canvas);
+                 buttonLeft.draw(canvas);
+                 buttonRight.draw(canvas);
                  character.draw(canvas);
                  holder.unlockCanvasAndPost(canvas);
              }
@@ -254,7 +277,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  try{
                      thread.sleep(timeToSleep);
                  }catch (InterruptedException e){
-
+                    e.printStackTrace();
                  }
              }
 
@@ -281,7 +304,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              try{
                  thread.join();
              }catch (InterruptedException e){
-
+                e.printStackTrace();
              }
          }
      }
