@@ -18,6 +18,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     Button options;
 
     SoundPool soundPool;
+    boolean musicMuted;
     int menuTheme = -1;
 
     @Override
@@ -26,6 +27,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_main_menu);
 
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -35,8 +37,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         } catch (IOException e) {
             //catches an exception.
         }
-        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
 
+        if(Options.returnBool() == true) {
+            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+
+        }
         Button startGame = findViewById(R.id.play);
         startGame.setOnClickListener(this);
 

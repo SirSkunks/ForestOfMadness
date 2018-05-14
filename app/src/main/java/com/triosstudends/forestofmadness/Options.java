@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -20,6 +23,10 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     private SeekBar musicBar;
     private SeekBar effectBar;
     private AudioManager audioManager;
+    private Switch musicMute;
+    private Switch SeMute;
+    public static boolean musicMuted = false;
+    public static boolean SeMuted = false;
 
     SoundPool soundPool;
     int menuTheme = -1;
@@ -39,7 +46,12 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         }catch (IOException e){
             //catches an exception.
         }
-        soundPool.play(menuTheme,1,1,0,-1,1);
+
+        if(musicMuted) {
+            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+        }
+
+
         //Sets Onclick listner for Button To return to menu
         mainMenu = findViewById(R.id.mainMenu);
         mainMenu.setOnClickListener(this);
@@ -47,13 +59,16 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         initControls();
     }
     private void initControls(){
-        //Sets SeekBar max to system max volume as well as sets teh currnet bar level to the current system audi level.
+        //Sets SeekBar max to system max volume as well as sets teh currnet bar level to the current system audio level.
       try{
+            musicMute = findViewById(R.id.switchMusic);
+             SeMute = findViewById(R.id.switchSe);
             musicBar = findViewById(R.id.SbMusic);
             audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             musicBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
             musicBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
             musicBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
                 int progress;
 
                 @Override
@@ -72,6 +87,45 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress,0);
                 }
             });
+            musicMute.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    if(isChecked){
+                        musicMuted = true;
+                        Toast.makeText(getApplicationContext(),"musicMuted",Toast.LENGTH_LONG).show();
+                    }
+                    if(!isChecked){
+                        musicMuted = false;
+                        Toast.makeText(getApplicationContext(),"musicOn",Toast.LENGTH_LONG).show();
+
+                    }
+
+
+                }
+
+
+             });
+          SeMute.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+          {
+              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+              {
+                  if(isChecked){
+                      SeMuted = true;
+                      Toast.makeText(getApplicationContext(),"SoundEffectMuted",Toast.LENGTH_LONG).show();
+                  }
+                  if(!isChecked){
+                      SeMuted = false;
+                      Toast.makeText(getApplicationContext(),"SoundEffectOn",Toast.LENGTH_LONG).show();
+                  }
+
+
+              }
+
+
+          });
+
+
 
       }catch(Exception e){
 
@@ -95,5 +149,15 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         //load back to the main menu once the back button is clicked.
         Intent i = new Intent(this,MainMenu.class);
         startActivity(i);
+    }
+
+    public  static boolean returnBool(){
+        return musicMuted;
+
+    }
+
+    public static boolean returnBool2(){
+        return SeMuted;
+
     }
 }
