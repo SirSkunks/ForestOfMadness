@@ -7,6 +7,14 @@
     tools:context=".Options">
 
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="609dp"
+        android:layout_height="454dp"
+        app:srcCompat="@drawable/background"
+        tools:layout_editor_absoluteX="-14dp"
+        tools:layout_editor_absoluteY="-31dp" />
+
     <Button
         android:id="@+id/mainMenu"
         android:layout_width="wrap_content"
@@ -42,14 +50,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="72dp"
         android:text="Volume"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toTopOf="@+id/SbMusic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <SeekBar
         android:id="@+id/SbMusic"

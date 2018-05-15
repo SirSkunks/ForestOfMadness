@@ -68,8 +68,12 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         }catch (IOException e){
             e.printStackTrace();
         }
+        if(Options.returnBool() == true) {
+            soundPool.play(levelTheme,1, 1,0,-1,1);
 
-        soundPool.play(levelTheme,1, 1,0,-1,1);
+        }
+
+
         playerScore = findViewById(R.id.playerScore);
 
         characterView = new CharacterView(this);
