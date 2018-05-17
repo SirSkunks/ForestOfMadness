@@ -138,6 +138,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          int fps;
 
         ArrayList<Platforms> plats;
+        ArrayList<Items> other;
 
          public CharacterView(Context context){
              super(context);
@@ -167,8 +168,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
              // Pick-ups
              items = new Items(pickUps);
-             items.addAnimation("coffee", 1, 1, 1, 34, 34, false);
-             items.addAnimation("pills", 2, 1, 1, 34, 34, false);
+             items.addAnimation("coffee", 0, 1, 1, 34, 34, false);
+             items.addAnimation("pills", 1, 1, 1, 34, 34, false);
 
              // Left button Creation
              buttonLeft = new ButtonLeft(btnLeft);
@@ -198,6 +199,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public void platformGeneration(){
              Random random = new Random();
              int generate = random.nextInt(100) + 1;
+             int itemGen =  random.nextInt(100) + 1;
 
              // Bottom Row of platforms
              if (generate <= 33) {
@@ -213,6 +215,13 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
+                 if (itemGen <=15){
+                     Items coffee = new Items(pickUps);
+                     coffee.addAnimation("coffee", 0, 1,1,34,34,false);
+                     coffee.setAnimation("coffee");
+                     coffee.x = middle.width / 2;
+                     coffee.y = middle.y;
+                 }
 
                  Platforms end = new Platforms(world);
                  end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
