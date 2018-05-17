@@ -12,8 +12,6 @@ public class Background {
     int height;
 
     private final Bitmap bmp;
-    private int scrX = 0;
-    private int scrY = 0;
 
     public Background(Bitmap bmp){
         this.bmp = bmp;
@@ -23,8 +21,7 @@ public class Background {
     }
 
     public void draw(Canvas canvas){
-        Rect srcRect = new Rect(scrX, scrY, scrX + width, scrY + height);
         Rect dstRect = new Rect(x, y, x + width, y + height);
-        canvas.drawBitmap(bmp, srcRect, dstRect, null);
+        canvas.drawBitmap(bmp, null, dstRect, null);
     }
 }
