@@ -105,7 +105,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     protected void onResume(){
         super.onResume();
         characterView.resume();
-        playMusic();
+        //soundPool.play(levelTheme,1, 1,0,-1,1);
     }
 
     @Override
