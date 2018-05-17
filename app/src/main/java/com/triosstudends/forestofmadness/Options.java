@@ -39,11 +39,14 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        //Setting up pref save for options menu
         prefs = getSharedPreferences(Mmuted,MODE_PRIVATE);
         editor = prefs.edit();
+        //sets music muted to what is saved in preff
         musicMuted =prefs.getBoolean(Mmuted,musicMuted);
         //Load Sounds Pool
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        //ensures soundpool is loaded before running playMusic()
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
@@ -82,6 +85,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             musicBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
             musicBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+            //sets musicMute toggle postion based on musicMuted bool
             if(musicMuted){
                 musicMute.setChecked(true);
             }
@@ -171,11 +175,12 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         Intent i = new Intent(this,MainMenu.class);
         startActivity(i);
     }
-
+    //funtion to rerturn bool for muting music
     public  static boolean returnBool(){
         return musicMuted;
 
     }
+    //function created to handloe the soundpool.play call based on a bool
     public void playMusic(){
 
         if(!musicMuted) {
@@ -186,7 +191,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         }
     }
 
-
+    //function to return bool for muting Sound Effects
     public static boolean returnBool2(){
         return SeMuted;
 
