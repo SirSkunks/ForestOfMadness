@@ -162,7 +162,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     public void onResume(){
         super.onResume();
 
-        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+       playMusic();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.triosstudends.forestofmadness;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -17,9 +18,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     Button play;
     Button options;
 
+
     SoundPool soundPool;
     boolean musicMuted = false;
     int menuTheme = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_main_menu);
 
       musicMuted = Options.returnBool();
+
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
@@ -73,7 +77,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onResume(){
         super.onResume();
-        soundPool.play(menuTheme,1,1,0,-1,1);
+
+        playMusic();
     }
 
     public void playMusic() {
@@ -86,6 +91,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onPause(){
         super.onPause();
+        musicMuted = Options.returnBool();
         soundPool.autoPause();
     }
 
