@@ -44,8 +44,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
 
 
-    /*private SoundPool soundPool;
-    int levelTheme = -1;*/
+    private SoundPool soundPool;
+    int levelTheme = -1;
 
     int pScore;
     boolean playing = true;
@@ -63,7 +63,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         preferences = getSharedPreferences(dataName, MODE_PRIVATE);
         editor = preferences.edit();
 
-        /*soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         try{
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -72,9 +72,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             levelTheme = soundPool.load(descriptor, 0);
         }catch (IOException e){
             e.printStackTrace();
-        }*/
+        }
 
-        //soundPool.play(levelTheme,1, 1,0,-1,1);
+        soundPool.play(levelTheme,1, 1,0,-1,1);
 
         characterView = new CharacterView(this);
         setContentView(characterView);
@@ -85,21 +85,21 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        //soundPool.autoPause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         characterView.pause();
-        //soundPool.autoPause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         characterView.resume();
-        //soundPool.play(levelTheme,1, 1,0,-1,1);
+        soundPool.play(levelTheme,1, 1,0,-1,1);
     }
 
     @Override
@@ -199,7 +199,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public void platformGeneration(){
              Random random = new Random();
              int generate = random.nextInt(100) + 1;
-             int itemGen =  random.nextInt(100) + 1;
 
              // Bottom Row of platforms
              if (generate <= 33) {
@@ -215,13 +214,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
-                 if (itemGen <=15){
-                     Items coffee = new Items(pickUps);
-                     coffee.addAnimation("coffee", 0, 1,1,34,34,false);
-                     coffee.setAnimation("coffee");
-                     coffee.x = middle.width / 2;
-                     coffee.y = middle.y;
-                 }
+
 
                  Platforms end = new Platforms(world);
                  end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
@@ -231,6 +224,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  plats.add(lead);
                  plats.add(middle);
                  plats.add(end);
+
              }
 
              // Middle row of platforms
@@ -320,7 +314,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
                          x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                  && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
-                     vy = 0;// Temporarily set to 0 until more is added to the game.
+                     vy = -5;
                      character.setAnimation("jumpRight");
                  }
                  break;
@@ -331,7 +325,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                              x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                      && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                          vx = 0;
-                         vy = 0; // Temporarily set to 0 until more is added to the game.
+                         vy = 5;
                          character.setAnimation("idle");
                      }
              }
@@ -348,15 +342,25 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              if(plats.size() % 3 == 0 && plats.size() < 9){
                  platformGeneration();
              }
-             // Temporary level boundaries.
-             //if the character touches the bottom of the screen stop the movement
+
+             // Level Boundaries, Makes it so the player won't get stuck on the edges of the screen.
              if(character.y + character.height > screenHeight){
                  vy = 0;
+                 character.y = screenHeight - character.height;
                  character.setAnimation("idle");
              }
-             // if the character touches the top they go back down
              else if(character.y <= 0){
-                 vy = 5;
+                 vy = 0;
+                 character.y = 0;
+             }
+             if (character.x +character.width > screenWidth){
+                 vx = 0;
+                 character.x = screenWidth - character.width;
+             }
+             else if (character.x <= 0){
+                 vx = 0;
+                 character.x = 0;
+
              }
          }
 
@@ -372,7 +376,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                              p.draw(canvas);
                          }
 
-                         // items.draw(canvas);
                          buttonLeft.draw(canvas);
                          buttonRight.draw(canvas);
                          character.draw(canvas);
