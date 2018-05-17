@@ -42,8 +42,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Canvas canvas;
     Paint paint;
 
-
-
     private SoundPool soundPool;
     int levelTheme = -1;
 
@@ -69,6 +67,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         musicMuted = Options.returnBool();
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 playMusic();
@@ -84,14 +83,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             e.printStackTrace();
         }
 
-
         soundPool.play(levelTheme,1, 1,0,-1,1);
-
 
         characterView = new CharacterView(this);
         setContentView(characterView);
-
-
     }
 
     @Override
@@ -155,7 +150,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          int fps;
 
         ArrayList<Platforms> plats;
-        ArrayList<Items> other;
 
          public CharacterView(Context context){
              super(context);
@@ -209,8 +203,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
              character.x = screenWidth / 2 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
-
-
          }
 
          public void platformGeneration(){
@@ -231,7 +223,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
-
 
                  Platforms end = new Platforms(world);
                  end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
@@ -356,10 +347,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.update(deltaTime);
              updatePlatforms();
 
+             // Draws Platforms while there is less than 9 on the screen
              if(plats.size() % 3 == 0 && plats.size() < 9){
                  platformGeneration();
              }
-
              // Level Boundaries, Makes it so the player won't get stuck on the edges of the screen.
              if(character.y + character.height > screenHeight){
                  vy = 0;
@@ -377,7 +368,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              else if (character.x <= 0){
                  vx = 0;
                  character.x = 0;
-
              }
          }
 
@@ -439,8 +429,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              thread = new Thread(this);
              thread.start();
              running = true;
-
          }
+         
          public void pause(){
              running = false;
              try{
