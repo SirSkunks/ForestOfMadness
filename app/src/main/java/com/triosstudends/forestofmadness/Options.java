@@ -2,6 +2,7 @@ package com.triosstudends.forestofmadness;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -20,11 +21,9 @@ import java.io.IOException;
 public class Options extends AppCompatActivity  implements View.OnClickListener{
     // Declaring Seekbars and AudioManager
     Button mainMenu;
+    SharedPreferences prefs;
     private SeekBar musicBar;
-    private SeekBar effectBar;
     private AudioManager audioManager;
-    private Switch musicMute;
-    private Switch SeMute;
     public static boolean musicMuted = false;
     public static boolean SeMuted = false;
 
@@ -47,9 +46,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             //catches an exception.
         }
 
-        if(musicMuted) {
-            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
-        }
 
 
         //Sets Onclick listner for Button To return to menu
@@ -57,10 +53,14 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         mainMenu.setOnClickListener(this);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         initControls();
+
+
     }
     private void initControls(){
         //Sets SeekBar max to system max volume as well as sets teh currnet bar level to the current system audio level.
-      try{
+        Switch musicMute;
+        Switch SeMute;
+        try{
             musicMute = findViewById(R.id.switchMusic);
              SeMute = findViewById(R.id.switchSe);
             musicBar = findViewById(R.id.SbMusic);
@@ -124,9 +124,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
 
 
           });
-
-
-
       }catch(Exception e){
 
       }
@@ -141,6 +138,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     @Override
     public void onResume(){
         super.onResume();
+
         soundPool.play(menuTheme, 1, 1, 0, -1, 1);
     }
 
@@ -155,6 +153,13 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         return musicMuted;
 
     }
+    public void playMusic(){
+
+        if(musicMuted) {
+            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+        }
+    }
+
 
     public static boolean returnBool2(){
         return SeMuted;
