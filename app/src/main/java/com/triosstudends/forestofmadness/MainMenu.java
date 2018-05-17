@@ -18,7 +18,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     Button options;
 
     SoundPool soundPool;
-    boolean musicMuted;
+    boolean musicMuted = false;
     int menuTheme = -1;
 
     @Override
@@ -77,8 +77,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     }
 
     public void playMusic() {
-        if(musicMuted) {
 
+        if(!musicMuted) {
             soundPool.play(menuTheme, 1, 1, 0, -1, 1);
         }
     }

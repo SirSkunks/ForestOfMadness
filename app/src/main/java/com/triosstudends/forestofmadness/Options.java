@@ -22,10 +22,13 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     // Declaring Seekbars and AudioManager
     Button mainMenu;
     SharedPreferences prefs;
+    SharedPreferences.Editor editor;
     private SeekBar musicBar;
     private AudioManager audioManager;
     public static boolean musicMuted = false;
     public static boolean SeMuted = false;
+    String Mmuted;
+    String Smuted;
 
     SoundPool soundPool;
     int menuTheme = -1;
@@ -36,8 +39,18 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        prefs = getSharedPreferences(Mmuted,MODE_PRIVATE);
+        editor = prefs.edit();
+        musicMuted =prefs.getBoolean(Mmuted,musicMuted);
         //Load Sounds Pool
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                playMusic();
+            }
+        });
+
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -69,6 +82,10 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             musicBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
             musicBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+            if(musicMuted){
+                musicMute.setChecked(true);
+            }
+
             musicBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
                 int progress;
@@ -95,10 +112,14 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
                 {
                     if(isChecked){
                         musicMuted = true;
+                        editor.putBoolean(Mmuted,musicMuted);
+                        soundPool.autoPause();
                         Toast.makeText(getApplicationContext(),"musicMuted",Toast.LENGTH_LONG).show();
                     }
                     if(!isChecked){
                         musicMuted = false;
+                        editor.putBoolean(Mmuted,musicMuted);
+                        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
                         Toast.makeText(getApplicationContext(),"musicOn",Toast.LENGTH_LONG).show();
 
                     }
@@ -157,8 +178,11 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     }
     public void playMusic(){
 
-        if(musicMuted) {
+        if(!musicMuted) {
             soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+        }
+        else if(musicMuted){
+            soundPool.autoPause();
         }
     }
 

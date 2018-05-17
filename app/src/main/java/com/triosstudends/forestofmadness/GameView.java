@@ -47,6 +47,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     private SoundPool soundPool;
     int levelTheme = -1;
 
+    boolean musicMuted = false;
     int pScore;
     boolean playing = true;
     SharedPreferences preferences;
@@ -64,6 +65,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         editor = preferences.edit();
 
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+
+        musicMuted = Options.returnBool();
+        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                playMusic();
+            }
+        });
         try{
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -74,7 +84,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             e.printStackTrace();
         }
 
+
         soundPool.play(levelTheme,1, 1,0,-1,1);
+
 
         characterView = new CharacterView(this);
         setContentView(characterView);
@@ -105,6 +117,11 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         //onClick(characterView);
+    }
+    public void playMusic(){
+        if(!musicMuted){
+            soundPool.play(levelTheme,1, 1,0,-1,1);
+        }
     }
 
     class CharacterView extends SurfaceView implements Runnable {
