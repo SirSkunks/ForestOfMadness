@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".GameView"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"
+            ></activity>
         <activity android:name=".Options"
             android:screenOrientation="landscape"></activity>
     </application>

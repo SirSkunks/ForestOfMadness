@@ -5,15 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.HashMap;
-public class Platforms {
+
+public class Items {
     int x = 0;
     int y = 0;
     int width;
     int height;
 
     // Sprite Sheet
-    private int sheet_rows = 4;
-    private int sheet_cols = 5;
+    private int sheet_rows = 1;
+    private int sheet_cols = 3;
 
     private final Bitmap bitmap;
     private int srcX = 0;
@@ -27,7 +28,7 @@ public class Platforms {
     private long frameTime = 0;
     private boolean playing = false;
 
-    Platforms (Bitmap bitmap){
+    Items (Bitmap bitmap){
         this.bitmap = bitmap;
 
         width = bitmap.getWidth() / sheet_cols;
@@ -51,7 +52,6 @@ public class Platforms {
                         playing = false;
                     }
                 }
-                updateSrc();
             }
         }
     }
@@ -79,13 +79,6 @@ public class Platforms {
         frameTime = 1000/ currentAnimation.fps;
 
         playing = true;
-        updateSrc();
         return true;
     }
-
-    private void updateSrc(){
-        srcX = currentFrame % sheet_cols * width;
-        srcY = currentFrame / sheet_cols * height;
-    }
-
 }
