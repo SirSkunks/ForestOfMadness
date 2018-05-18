@@ -42,17 +42,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Paint paint;
 
 
-
     private SoundPool soundPool;
     int levelTheme = -1;
     boolean musicMuted = false;
-    int pScore;
-    boolean playing = true;
+    int pScore = 0;
+    int pHealth = 2000;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
     String dataName = "Data";
-    String intName = "Int";
+
     int highScore;
 
     @Override
@@ -79,32 +77,29 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             e.printStackTrace();
         }
 
-
-
         characterView = new CharacterView(this);
         setContentView(characterView);
-
-
+        paint = new Paint();
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        //soundPool.autoPause();
+        soundPool.release();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         characterView.pause();
-        //soundPool.autoPause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         characterView.resume();
-        //soundPool.play(levelTheme,1, 1,0,-1,1);
+        playMusic();
     }
 
     @Override
@@ -200,9 +195,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, false);
              character.setAnimation("idle");
 
-             character.x = screenWidth / 2 - character.width / 2;
+             character.x = 0 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
-
 
          }
 
@@ -309,7 +303,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
                          x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                  && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
-                     vy = -5;
+                     vy = -7;
                      character.setAnimation("jumpRight");
                  }
                  break;
@@ -320,7 +314,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                              x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                      && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                          vx = 0;
-                         vy = 5;
+                         vy = 7;
                          character.setAnimation("runRight");
                      }
              }
@@ -335,6 +329,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              updatePlatforms();
              updateCollision();
 
+             pScore ++;
+             pHealth --;
              if(plats.size() % 3 == 0 && plats.size() < 9){
                  platformGeneration();
              }
@@ -362,7 +358,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             }
 
             //Check to see if the character is Colliding with a platform
-
              for (Sprite p: plats){
                 Collision.CollisionData collisionData = Collision.blockTestRectangle(character, p);
 
@@ -372,8 +367,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     break;
                 }
              }
-
          }
+
 
          private void drawCanvas(){
              if (holder.getSurface().isValid()) {
@@ -386,13 +381,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          for (Sprite p : plats) {
                              p.draw(canvas);
                          }
-
+                         paint.setColor(Color.argb(255, 249, 129, 0));
+                         paint.setTextSize(40);
+                         canvas.drawText("Score: " + pScore, 10, 50, paint);
+                         canvas.drawText("Health: " + pHealth, 300, 50, paint);
                          // items.draw(canvas);
                          buttonLeft.draw(canvas);
                          buttonRight.draw(canvas);
                          character.draw(canvas);
-                     }
-                     finally {
+                     } finally {
                          if (canvas != null) {
                              holder.unlockCanvasAndPost(canvas);
                          }
@@ -427,6 +424,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  updateLogic();
                  drawCanvas();
                  controlFPS();
+                 if (pHealth == 0){
+                     running = false;
+                 }
              }
          }
 
