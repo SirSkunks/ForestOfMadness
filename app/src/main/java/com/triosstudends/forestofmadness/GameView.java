@@ -37,8 +37,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Background background;
     ButtonLeft buttonLeft;
     ButtonRight buttonRight;
-    Platforms platform;
-    Items items;
+
     Canvas canvas;
     Paint paint;
 
@@ -138,7 +137,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          Bitmap btnLeft;
          Bitmap btnRight;
 
-         Character character;
+         Sprite character;
+         Sprite items;
 
          int vx = 0;
          int vy = 0;
@@ -148,8 +148,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          long deltaTime;
          int fps;
 
-        ArrayList<Platforms> plats;
-        ArrayList<Items> other;
+        ArrayList<Sprite> plats;
 
          public CharacterView(Context context){
              super(context);
@@ -178,7 +177,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              background.height = screenHeight;
 
              // Pick-ups
-             items = new Items(pickUps);
+             items = new Sprite(pickUps);
              items.addAnimation("coffee", 0, 1, 1, 34, 34, false);
              items.addAnimation("pills", 1, 1, 1, 34, 34, false);
 
@@ -193,12 +192,12 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              buttonRight.y = screenHeight - buttonRight.height;
 
              // Character Creation and animations.
-             character = new Character(bitmap);
+             character = new Sprite(bitmap);
              character.addAnimation("runRight", 0, 8, 7, 64,64, true);
              character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
              character.addAnimation("idle", 8, 1, 7, 64,64, true);
-             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,true);
-             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, true);
+             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,false);
+             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, false);
              character.setAnimation("idle");
 
              character.x = screenWidth / 2 - character.width / 2;
@@ -210,31 +209,29 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public void platformGeneration(){
              Random random = new Random();
              int generate = random.nextInt(100) + 1;
-             int itemGen =  random.nextInt(100) + 1;
 
              // Bottom Row of platforms
-             if (generate <= 33) {
+             if (generate <= 50) {
 
-                 Platforms lead = new Platforms(world);
+                 Sprite lead = new Sprite(world);
+                 lead.sheet_rows = 4;
+                 lead.sheet_cols = 5;
                  lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
                  lead.setAnimation("platform1");
                  lead.x = screenWidth;
                  lead.y = screenHeight - lead.height;
 
-                 Platforms middle = new Platforms(world);
+                 Sprite middle = new Sprite(world);
+                 middle.sheet_rows = 4;
+                 middle.sheet_cols = 5;
                  middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
-                 if (itemGen <=15){
-                     Items coffee = new Items(pickUps);
-                     coffee.addAnimation("coffee", 0, 1,1,34,34,false);
-                     coffee.setAnimation("coffee");
-                     coffee.x = middle.width / 2;
-                     coffee.y = middle.y;
-                 }
 
-                 Platforms end = new Platforms(world);
+                 Sprite end = new Sprite(world);
+                 end.sheet_rows = 4;
+                 end.sheet_cols = 5;
                  end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
                  end.setAnimation("platform3");
                  end.x = middle.x + middle.width;
@@ -245,46 +242,27 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              }
 
              // Middle row of platforms
-             else if (generate <= 66) {
-
-                 Platforms lead = new Platforms(world);
-                 lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
-                 lead.setAnimation("platform1");
-                 lead.x = screenWidth;
-                 lead.y = screenHeight / 2;
-
-                 Platforms middle = new Platforms(world);
-                 middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
-                 middle.setAnimation("platform2");
-                 middle.x = lead.x + lead.width;
-                 middle.y = lead.y;
-
-                 Platforms end = new Platforms(world);
-                 end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
-                 end.setAnimation("platform3");
-                 end.x = middle.x + middle.width;
-                 end.y = lead.y;
-                 plats.add(lead);
-                 plats.add(middle);
-                 plats.add(end);
-             }
-
-             // Top row of platforms.
              else {
 
-                 Platforms lead = new Platforms(world);
+                 Sprite lead = new Sprite(world);
+                 lead.sheet_rows = 4;
+                 lead.sheet_cols = 5;
                  lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
                  lead.setAnimation("platform1");
                  lead.x = screenWidth;
-                 lead.y = lead.height;
+                 lead.y = screenHeight / 2 - 3;
 
-                 Platforms middle = new Platforms(world);
+                 Sprite middle = new Sprite(world);
+                 middle.sheet_rows = 4;
+                 middle.sheet_cols = 5;
                  middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
 
-                 Platforms end = new Platforms(world);
+                 Sprite end = new Sprite(world);
+                 end.sheet_rows = 4;
+                 end.sheet_cols = 5;
                  end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
                  end.setAnimation("platform3");
                  end.x = middle.x + middle.width;
@@ -296,9 +274,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          }
 
          public void updatePlatforms(){
-             Iterator<Platforms> i = plats.iterator();
+             Iterator<Sprite> i = plats.iterator();
              while (i.hasNext()){
-                 Platforms p = i.next();
+                 Sprite p = i.next();
                  p.x -= 10;
 
                  if(p.x + p.width < 0){
@@ -332,7 +310,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
                          x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                  && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
-                     vy = 0;// Temporarily set to 0 until more is added to the game.
+                     vy = -5;
                      character.setAnimation("jumpRight");
                  }
                  break;
@@ -343,8 +321,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                              x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                      && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                          vx = 0;
-                         vy = 0; // Temporarily set to 0 until more is added to the game.
-                         character.setAnimation("idle");
+                         vy = 5;
+                         character.setAnimation("runRight");
                      }
              }
              return true;
@@ -356,20 +334,46 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.y += vy;
              character.update(deltaTime);
              updatePlatforms();
+             updateCollision();
 
              if(plats.size() % 3 == 0 && plats.size() < 9){
                  platformGeneration();
              }
-             // Temporary level boundaries.
-             //if the character touches the bottom of the screen stop the movement
-             if(character.y + character.height > screenHeight){
-                 vy = 0;
-                 character.setAnimation("idle");
+         }
+
+         public void updateCollision(){
+
+            //if the character touches the bottom of the screen stop the movement
+            if(character.y + character.height > screenHeight){
+                vy = 0;
+                character.y = screenHeight - character.height;
+            }
+            // if the character touches the top they go back down
+            else if(character.y <= 0){
+                vy = 0;
+                character.y = 0;
+            }
+            if (character.x +character.width > screenWidth){
+                character.x = screenWidth - character.width;
+                vx = 0;
+            }
+            else if(character.x <= 0){
+                character.x = 0;
+                vx = 0;
+            }
+
+            //Check to see if the character is Colliding with a platform
+
+             for (Sprite p: plats){
+                Collision.CollisionData collisionData = Collision.blockTestRectangle(character, p);
+
+                if(collisionData != null){
+                    character.x += collisionData.offsetX;
+                    character.y += collisionData.offsetY;
+                    break;
+                }
              }
-             // if the character touches the top they go back down
-             else if(character.y <= 0){
-                 vy = 5;
-             }
+
          }
 
          private void drawCanvas(){
@@ -380,7 +384,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          canvas.drawColor(Color.argb(255, 255, 0, 0));
 
                          background.draw(canvas);
-                         for (Platforms p : plats) {
+                         for (Sprite p : plats) {
                              p.draw(canvas);
                          }
 
