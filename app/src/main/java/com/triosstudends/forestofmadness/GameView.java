@@ -306,7 +306,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                  }
              }
          }
-       
+
 
          @Override
          public boolean onTouchEvent(MotionEvent event){
