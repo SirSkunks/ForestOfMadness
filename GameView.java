@@ -1,5 +1,6 @@
 package com.triosstudends.forestofmadness;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
@@ -12,9 +13,9 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -22,11 +23,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class GameView extends AppCompatActivity implements View.OnClickListener {
@@ -37,17 +35,15 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Background background;
     ButtonLeft buttonLeft;
     ButtonRight buttonRight;
-
+    Platforms platform;
     Canvas canvas;
     Paint paint;
 
-
-
     private SoundPool soundPool;
     int levelTheme = -1;
-    boolean musicMuted = false;
-    int pScore;
-    boolean playing = true;
+
+    int pScore =0;
+    int pHealth =100;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
@@ -61,14 +57,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
         preferences = getSharedPreferences(dataName, MODE_PRIVATE);
         editor = preferences.edit();
-        musicMuted = Options.returnBool();
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                playMusic();
-            }
-        });
+
+
+ /*soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         try{
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -78,13 +69,16 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         }catch (IOException e){
             e.printStackTrace();
         }
+        if(Options.returnBool() == true) {
+            soundPool.play(levelTheme,1, 1,0,-1,1);
+
+        }
 
 
-
+        playerScore = findViewById(R.id.playerScore);*/
+        paint = new Paint();
         characterView = new CharacterView(this);
         setContentView(characterView);
-
-
     }
 
     @Override
@@ -111,11 +105,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         //onClick(characterView);
     }
-    public void playMusic(){
-        if(!musicMuted){
-            soundPool.play(levelTheme,1, 1,0,-1,1);
-        }
-    }
 
     class CharacterView extends SurfaceView implements Runnable {
 
@@ -133,12 +122,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          Bitmap bitmap;
          Bitmap bgBmp;
          Bitmap world;
-         Bitmap pickUps;
          Bitmap btnLeft;
          Bitmap btnRight;
 
-         Sprite character;
-         Sprite items;
+         Character character;
 
          int vx = 0;
          int vy = 0;
@@ -148,12 +135,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          long deltaTime;
          int fps;
 
-        ArrayList<Sprite> plats;
-
          public CharacterView(Context context){
              super(context);
 
-             plats = new ArrayList<>();
              holder = getHolder();
 
              display = getWindowManager().getDefaultDisplay();
@@ -167,23 +151,25 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.jade);
              bgBmp = BitmapFactory.decodeResource(getResources(),R.drawable.background);
              world = BitmapFactory.decodeResource(getResources(), R.drawable.worldsprites);
-             pickUps = BitmapFactory.decodeResource(getResources(),R.drawable.items);
-             btnLeft = BitmapFactory.decodeResource(getResources(),R.drawable.leftbutton);
-             btnRight = BitmapFactory.decodeResource(getResources(),R.drawable.rightbutton);
+             btnLeft = BitmapFactory.decodeResource(getResources(),R.drawable.temp1);
+             btnRight = BitmapFactory.decodeResource(getResources(),R.drawable.temp2);
 
              // Background placement
              background = new Background(bgBmp);
-             background.width = screenWidth;
-             background.height = screenHeight;
+
+             // Platform placement
+             platform = new Platforms(world);
+             platform.addAnimation("platform1", 0, 0, 0,64, 64, true);
+             platform.addAnimation("platform2", 1, 0, 0,64, 64, true);
+             platform.addAnimation("platform3", 2, 0, 0,64, 64, true);
 
              // Pick-ups
-             items = new Sprite(pickUps);
-             items.addAnimation("coffee", 0, 1, 1, 34, 34, false);
-             items.addAnimation("pills", 1, 1, 1, 34, 34, false);
+             platform = new Platforms(world);
+             //platform.addAnimation("pills", );
 
              // Left button Creation
              buttonLeft = new ButtonLeft(btnLeft);
-             buttonLeft.x = 0;
+             buttonLeft.x =  screenWidth - buttonLeft.width * 6 + 3;
              buttonLeft.y = screenHeight - buttonLeft.height;
 
              // Right button Creation
@@ -192,99 +178,25 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              buttonRight.y = screenHeight - buttonRight.height;
 
              // Character Creation and animations.
-             character = new Sprite(bitmap);
+             character = new Character(bitmap);
              character.addAnimation("runRight", 0, 8, 7, 64,64, true);
              character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
              character.addAnimation("idle", 8, 1, 7, 64,64, true);
-             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,false);
-             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, false);
+             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,true);
+             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, true);
              character.setAnimation("idle");
 
              character.x = screenWidth / 2 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
-
-
          }
 
          public void platformGeneration(){
              Random random = new Random();
              int generate = random.nextInt(100) + 1;
+             if (generate <= 10){
 
-             // Bottom Row of platforms
-             if (generate <= 50) {
-
-                 Sprite lead = new Sprite(world);
-                 lead.sheet_rows = 4;
-                 lead.sheet_cols = 5;
-                 lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
-                 lead.setAnimation("platform1");
-                 lead.x = screenWidth;
-                 lead.y = screenHeight - lead.height;
-
-                 Sprite middle = new Sprite(world);
-                 middle.sheet_rows = 4;
-                 middle.sheet_cols = 5;
-                 middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
-                 middle.setAnimation("platform2");
-                 middle.x = lead.x + lead.width;
-                 middle.y = lead.y;
-
-                 Sprite end = new Sprite(world);
-                 end.sheet_rows = 4;
-                 end.sheet_cols = 5;
-                 end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
-                 end.setAnimation("platform3");
-                 end.x = middle.x + middle.width;
-                 end.y = lead.y;
-                 plats.add(lead);
-                 plats.add(middle);
-                 plats.add(end);
-             }
-
-             // Middle row of platforms
-             else {
-
-                 Sprite lead = new Sprite(world);
-                 lead.sheet_rows = 4;
-                 lead.sheet_cols = 5;
-                 lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
-                 lead.setAnimation("platform1");
-                 lead.x = screenWidth;
-                 lead.y = screenHeight / 2 - 3;
-
-                 Sprite middle = new Sprite(world);
-                 middle.sheet_rows = 4;
-                 middle.sheet_cols = 5;
-                 middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
-                 middle.setAnimation("platform2");
-                 middle.x = lead.x + lead.width;
-                 middle.y = lead.y;
-
-                 Sprite end = new Sprite(world);
-                 end.sheet_rows = 4;
-                 end.sheet_cols = 5;
-                 end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
-                 end.setAnimation("platform3");
-                 end.x = middle.x + middle.width;
-                 end.y = lead.y;
-                 plats.add(lead);
-                 plats.add(middle);
-                 plats.add(end);
              }
          }
-
-         public void updatePlatforms(){
-             Iterator<Sprite> i = plats.iterator();
-             while (i.hasNext()){
-                 Sprite p = i.next();
-                 p.x -= 10;
-
-                 if(p.x + p.width < 0){
-                     i.remove();
-                 }
-             }
-         }
-
          @Override
          public boolean onTouchEvent(MotionEvent event){
              float x = event.getX();
@@ -309,7 +221,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          && y != buttonLeft.y && y != (buttonLeft.y + buttonLeft.height) ||
                          x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                  && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
-                     vy = -5;
+                     vy = 0;// Temporarily set to 0 until more is added to the game.
                      character.setAnimation("jumpRight");
                  }
                  break;
@@ -320,84 +232,48 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                              x != buttonRight.x && x != (buttonRight.x + buttonRight.width)
                                      && y != buttonRight.y && y != (buttonRight.y + buttonRight.height)) {
                          vx = 0;
-                         vy = 5;
-                         character.setAnimation("runRight");
+                         vy = 0; // Temporarily set to 0 until more is added to the game.
+                         character.setAnimation("idle");
                      }
              }
              return true;
          }
 
          public void updateLogic(){
-
              character.x += vx;
              character.y += vy;
              character.update(deltaTime);
-             updatePlatforms();
-             updateCollision();
 
-             if(plats.size() % 3 == 0 && plats.size() < 9){
-                 platformGeneration();
+             pScore++;
+             pHealth--;
+
+             // Temporary level boundaries.
+             //if the character touches the bottom of the screen stop the movement
+             if(character.y + character.height > screenHeight){
+                 vy = 0;
+                 character.setAnimation("idle");
              }
-         }
-
-         public void updateCollision(){
-
-            //if the character touches the bottom of the screen stop the movement
-            if(character.y + character.height > screenHeight){
-                vy = 0;
-                character.y = screenHeight - character.height;
-            }
-            // if the character touches the top they go back down
-            else if(character.y <= 0){
-                vy = 0;
-                character.y = 0;
-            }
-            if (character.x +character.width > screenWidth){
-                character.x = screenWidth - character.width;
-                vx = 0;
-            }
-            else if(character.x <= 0){
-                character.x = 0;
-                vx = 0;
-            }
-
-            //Check to see if the character is Colliding with a platform
-
-             for (Sprite p: plats){
-                Collision.CollisionData collisionData = Collision.blockTestRectangle(character, p);
-
-                if(collisionData != null){
-                    character.x += collisionData.offsetX;
-                    character.y += collisionData.offsetY;
-                    break;
-                }
+             // if the character touches the top they go back down
+             else if(character.y <= 0){
+                 vy = 5;
              }
-
          }
 
          private void drawCanvas(){
-             if (holder.getSurface().isValid()) {
-                 synchronized (holder) {
-                     try {
-                         canvas = holder.lockCanvas();
-                         canvas.drawColor(Color.argb(255, 255, 0, 0));
+             if (holder.getSurface().isValid()){
+                 canvas = holder.lockCanvas();
+                 canvas.drawColor(Color.argb(0,0,0,0));
 
-                         background.draw(canvas);
-                         for (Sprite p : plats) {
-                             p.draw(canvas);
-                         }
+                 background.draw(canvas);
 
-                         // items.draw(canvas);
-                         buttonLeft.draw(canvas);
-                         buttonRight.draw(canvas);
-                         character.draw(canvas);
-                     }
-                     finally {
-                         if (canvas != null) {
-                             holder.unlockCanvasAndPost(canvas);
-                         }
-                     }
-                 }
+                 paint.setColor(Color.argb(255,249,129,0));
+                 paint.setTextSize(40);
+                 canvas.drawText("Score: " + pScore, 10, 50, paint);
+                 canvas.drawText("Health: " + pHealth, 10, 80, paint);
+                 buttonLeft.draw(canvas);
+                 buttonRight.draw(canvas);
+                 character.draw(canvas);
+                 holder.unlockCanvasAndPost(canvas);
              }
          }
 
@@ -425,6 +301,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public void run() {
              while(running){
                  updateLogic();
+                 if (pHealth == 0) {
+                     running = false;
+                 }
                  drawCanvas();
                  controlFPS();
              }

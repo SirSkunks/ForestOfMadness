@@ -1,6 +1,7 @@
 package com.triosstudends.forestofmadness;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -12,21 +13,31 @@ import android.widget.Button;
 
 import java.io.IOException;
 
-public class MainMenu extends AppCompatActivity implements View.OnClickListener{
+public class MainMenu extends AppCompatActivity implements View.OnClickListener {
     //Starting the Beta Branch
     Button play;
     Button options;
 
+
     SoundPool soundPool;
-    boolean musicMuted;
+    boolean musicMuted = false;
     int menuTheme = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+      musicMuted = Options.returnBool();
+
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                playMusic();
+            }
+        });
 
         try {
             AssetManager assetManager = getAssets();
@@ -34,19 +45,18 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
             descriptor = assetManager.openFd("titleTheme.mp3");
             menuTheme = soundPool.load(descriptor, 0);
+
         } catch (IOException e) {
             //catches an exception.
         }
 
-        if(Options.returnBool() == true) {
-            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
 
-        }
         Button startGame = findViewById(R.id.play);
         startGame.setOnClickListener(this);
 
         Button loadOptions = findViewById(R.id.options);
         loadOptions.setOnClickListener(this);
+
     }
 
     @Override
@@ -67,12 +77,21 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onResume(){
         super.onResume();
-        soundPool.play(menuTheme,1,1,0,-1,1);
+
+        playMusic();
+    }
+
+    public void playMusic() {
+
+        if(!musicMuted) {
+            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+        }
     }
 
     @Override
     public void onPause(){
         super.onPause();
+        musicMuted = Options.returnBool();
         soundPool.autoPause();
     }
 
@@ -81,4 +100,9 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         super.onDestroy();
         soundPool.autoPause();
     }
+
+
+
+
+
 }
