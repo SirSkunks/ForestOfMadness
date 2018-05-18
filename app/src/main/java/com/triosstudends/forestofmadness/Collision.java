@@ -39,7 +39,7 @@ public class Collision {
                 else{
                     oy = 0;
                     if(dx > 0){
-                        collisionSide = "right";
+                        collisionSide = "left";
                     }
                     //Sprite1 is left of Sprite2
                     else{
