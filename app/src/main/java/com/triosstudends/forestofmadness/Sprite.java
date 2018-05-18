@@ -6,7 +6,7 @@ import android.graphics.Rect;
 
 import java.util.HashMap;
 
-public class Character {
+public class Sprite {
 
     int x = 0;
     int y = 0;
@@ -29,7 +29,7 @@ public class Character {
     private long frameTime = 0;
     private boolean playing = false;
 
-    public Character (Bitmap bitmap){
+    public Sprite (Bitmap bitmap){
         this.bitmap = bitmap;
 
         width = bitmap.getWidth() / sheet_cols;
