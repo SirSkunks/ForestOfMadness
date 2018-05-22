@@ -198,6 +198,33 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.x = 0 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
 
+             Sprite start = new Sprite(world);
+             start.sheet_rows = 4;
+             start.sheet_cols = 5;
+             start.addAnimation("platform1", 0, 1, 1, 64, 64, false);
+             start.setAnimation("platform1");
+             start.x = 0;
+             start.y = screenHeight /2 - 3;
+
+             Sprite midsect = new Sprite(world);
+             midsect.sheet_rows = 4;
+             midsect.sheet_cols = 5;
+             midsect.addAnimation("platform2", 1, 1, 1, 64, 64, false);
+             midsect.setAnimation("platform2");
+             midsect.x = start.x + start.width;
+             midsect.y = start.y;
+
+             Sprite endsect = new Sprite(world);
+             endsect.sheet_rows = 4;
+             endsect.sheet_cols = 5;
+             endsect.addAnimation("platform3", 2, 1, 1, 64, 64, false);
+             endsect.setAnimation("platform3");
+             endsect.x = midsect.x + midsect.width;
+             endsect.y = start.y;
+             plats.add(start);
+             plats.add(midsect);
+             plats.add(endsect);
+
          }
 
          public void platformGeneration(){
@@ -271,7 +298,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              Iterator<Sprite> i = plats.iterator();
              while (i.hasNext()){
                  Sprite p = i.next();
-                 p.x -= 10;
+                 p.x -= 7;
 
                  if(p.x + p.width < 0){
                      i.remove();
@@ -331,7 +358,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
              pScore ++;
              pHealth --;
-             if(plats.size() % 3 == 0 && plats.size() < 9){
+             if(plats.size() % 3 == 0 && plats.size() < 6){
                  platformGeneration();
              }
          }
