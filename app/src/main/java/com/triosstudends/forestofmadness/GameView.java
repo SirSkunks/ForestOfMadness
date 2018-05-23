@@ -97,13 +97,14 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     protected void onPause(){
         super.onPause();
         characterView.pause();
-        //soundPool.autoPause();
+        soundPool.autoPause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         characterView.resume();
+        playMusic();
         //soundPool.play(levelTheme,1, 1,0,-1,1);
     }
 
@@ -283,6 +284,17 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                      i.remove();
                  }
              }
+         }
+
+         public void genItems(){
+             Random random = new Random();
+             int generate = random.nextInt(100) + 1;
+
+
+             if(generate >= 50){
+                Sprite item = new Sprite(pickUps);
+             }
+
          }
 
 
