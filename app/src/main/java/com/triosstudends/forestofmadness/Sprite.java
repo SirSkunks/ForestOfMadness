@@ -11,6 +11,15 @@ public class Sprite {
     int x = 0;
     int y = 0;
     int width;
+
+    public int getWidth() {
+        return (int)(width * scale);
+    }
+
+    public int getHeight() {
+        return (int)(height * scale);
+    }
+
     int height;
 
     // Sprite Sheet
@@ -22,14 +31,16 @@ public class Sprite {
     private int srcY = 0;
 
     // Animations
-    HashMap<String, Animation>animations;
+    private HashMap<String, Animation> animations;
     private Animation currentAnimation = null;
     private int currentFrame = 0;
     private long currentFrameTime = 0;
     private long frameTime = 0;
     private boolean playing = false;
 
-    public Sprite (Bitmap bitmap){
+    float scale = 1.0f;
+
+    Sprite (Bitmap bitmap){
         this.bitmap = bitmap;
 
         width = bitmap.getWidth() / sheet_cols;
@@ -37,7 +48,15 @@ public class Sprite {
 
         updateChar();
 
-        animations = new HashMap<String, Animation>();
+        animations = new HashMap<>();
+    }
+
+    public void updateDimens(int sheet_rows, int sheet_cols) {
+        this.sheet_cols = sheet_cols;
+        this.sheet_rows = sheet_rows;
+
+        width = bitmap.getWidth() / this.sheet_cols;
+        height = bitmap.getHeight() / this.sheet_rows;
     }
 
     public void update(long deltaTime){
@@ -63,13 +82,13 @@ public class Sprite {
 
     public void draw(Canvas canvas){
         Rect srcRect = new Rect(srcX, srcY, srcX + width, srcY + height );
-        Rect dstRect = new Rect(x, y, x + width, y + height );
+        Rect dstRect = new Rect(x, y, (int)(x + width * scale), (int)(y + height * scale));
 
         canvas.drawBitmap(bitmap, srcRect, dstRect, null);
     }
 
-    public void addAnimation(String name, int startFrame, int frameCount, int fps, int cellWidth, int cellHeight, boolean looping){
-        animations.put(name, new Animation(name, startFrame, frameCount, fps, cellWidth, cellHeight, looping));
+    public void addAnimation(String name, int startFrame, int frameCount, int fps, boolean looping){
+        animations.put(name, new Animation(name, startFrame, frameCount, fps, looping));
     }
 
     public boolean setAnimation(String name){

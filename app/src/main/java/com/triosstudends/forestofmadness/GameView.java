@@ -133,7 +133,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          Bitmap btnRight;
 
          Sprite character;
-         Sprite items;
 
          int vx = 0;
          int vy = 0;
@@ -144,12 +143,14 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          int fps;
 
         ArrayList<Sprite> plats;
+        ArrayList<Sprite> items;
 
          public CharacterView(Context context){
              super(context);
 
              plats = new ArrayList<>();
              holder = getHolder();
+             items = new ArrayList<>();
 
              display = getWindowManager().getDefaultDisplay();
              Point size = new Point();
@@ -171,11 +172,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              background.width = screenWidth;
              background.height = screenHeight;
 
-             // Pick-ups
-             items = new Sprite(pickUps);
-             items.addAnimation("coffee", 0, 1, 1, 34, 34, false);
-             items.addAnimation("pills", 1, 1, 1, 34, 34, false);
-
              // Left button Creation
              buttonLeft = new ButtonLeft(btnLeft);
              buttonLeft.x = 0;
@@ -188,36 +184,33 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
              // Character Creation and animations.
              character = new Sprite(bitmap);
-             character.addAnimation("runRight", 0, 8, 7, 64,64, true);
-             character.addAnimation("runLeft", 15, 8, 7, 64, 64, true);
-             character.addAnimation("idle", 8, 1, 7, 64,64, true);
-             character.addAnimation("jumpRight", 10, 5, 4, 64, 64,false);
-             character.addAnimation("jumpLeft", 25, 5, 4, 64, 64, false);
+             character.addAnimation("runRight", 0, 8, 7, true);
+             character.addAnimation("runLeft", 15, 8, 7, true);
+             character.addAnimation("idle", 8, 1, 7, true);
+             character.addAnimation("jumpRight", 10, 5, 4, false);
+             character.addAnimation("jumpLeft", 25, 5, 4,  false);
              character.setAnimation("idle");
 
              character.x = 0 - character.width / 2;
              character.y = screenHeight / 2 - character.height / 2;
 
              Sprite start = new Sprite(world);
-             start.sheet_rows = 4;
-             start.sheet_cols = 5;
-             start.addAnimation("platform1", 0, 1, 1, 64, 64, false);
+             start.updateDimens(4, 5);
+             start.addAnimation("platform1", 0, 1, 1, false);
              start.setAnimation("platform1");
              start.x = 0;
              start.y = screenHeight /2 - 3;
 
              Sprite midsect = new Sprite(world);
-             midsect.sheet_rows = 4;
-             midsect.sheet_cols = 5;
-             midsect.addAnimation("platform2", 1, 1, 1, 64, 64, false);
+             midsect.updateDimens(4, 5);
+             midsect.addAnimation("platform2", 1, 1, 1, false);
              midsect.setAnimation("platform2");
              midsect.x = start.x + start.width;
              midsect.y = start.y;
 
              Sprite endsect = new Sprite(world);
-             endsect.sheet_rows = 4;
-             endsect.sheet_cols = 5;
-             endsect.addAnimation("platform3", 2, 1, 1, 64, 64, false);
+             endsect.updateDimens(4, 5);
+             endsect.addAnimation("platform3", 2, 1, 1, false);
              endsect.setAnimation("platform3");
              endsect.x = midsect.x + midsect.width;
              endsect.y = start.y;
@@ -230,67 +223,116 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
          public void platformGeneration(){
              Random random = new Random();
              int generate = random.nextInt(100) + 1;
+             int spawn = random.nextInt(100) + 1;
 
              // Bottom Row of platforms
              if (generate <= 50) {
 
                  Sprite lead = new Sprite(world);
-                 lead.sheet_rows = 4;
-                 lead.sheet_cols = 5;
-                 lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
+                 lead.updateDimens(4, 5);
+                 lead.addAnimation("platform1", 0, 1, 1, false);
                  lead.setAnimation("platform1");
                  lead.x = screenWidth;
                  lead.y = screenHeight - lead.height;
 
                  Sprite middle = new Sprite(world);
-                 middle.sheet_rows = 4;
-                 middle.sheet_cols = 5;
-                 middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
+                 middle.updateDimens(4, 5);
+                 middle.addAnimation("platform2", 1, 1, 1, false);
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
 
                  Sprite end = new Sprite(world);
-                 end.sheet_rows = 4;
-                 end.sheet_cols = 5;
-                 end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
+                 end.updateDimens(4, 5);
+                 end.addAnimation("platform3", 2, 1, 1, false);
                  end.setAnimation("platform3");
                  end.x = middle.x + middle.width;
                  end.y = lead.y;
                  plats.add(lead);
                  plats.add(middle);
                  plats.add(end);
+
+                 if (spawn <= 100) {
+                     Log.d("*****", "coffee spawn");
+                     Sprite coffee = new Sprite(pickUps);
+                     coffee.updateDimens(1, 3);
+                     coffee.addAnimation("coffee", 0, 1, 1, false);
+                     coffee.setAnimation("coffee");
+                     coffee.x = middle.x;
+                     coffee.y = middle.y - coffee.getHeight();
+
+                     items.add(coffee);
+
+                 }
+                 else if (spawn <= 100){
+                     Log.d("*****", "pill spawn");
+                     Sprite pills = new Sprite(pickUps);
+                     pills.updateDimens(1, 3);
+                     pills.addAnimation("pills", 1, 1, 1, false);
+                     pills.setAnimation("pills");
+                     pills.x = middle.x;
+                     pills.y = middle.y - pills.height / 2;
+                     items.add(pills);
+                 }
+                 else{
+                     Log.d("*****", "nothing");
+                 }
              }
 
              // Middle row of platforms
              else {
 
                  Sprite lead = new Sprite(world);
-                 lead.sheet_rows = 4;
-                 lead.sheet_cols = 5;
-                 lead.addAnimation("platform1", 0, 1, 1, 64, 64, false);
+                 lead.updateDimens(4, 5);
+                 lead.addAnimation("platform1", 0, 1, 1, false);
                  lead.setAnimation("platform1");
                  lead.x = screenWidth;
                  lead.y = screenHeight / 2 - 3;
 
                  Sprite middle = new Sprite(world);
-                 middle.sheet_rows = 4;
-                 middle.sheet_cols = 5;
-                 middle.addAnimation("platform2", 1, 1, 1, 64, 64, false);
+                 middle.updateDimens(4, 5);
+                 middle.addAnimation("platform2", 1, 1, 1, false);
                  middle.setAnimation("platform2");
                  middle.x = lead.x + lead.width;
                  middle.y = lead.y;
 
                  Sprite end = new Sprite(world);
-                 end.sheet_rows = 4;
-                 end.sheet_cols = 5;
-                 end.addAnimation("platform3", 2, 1, 1, 64, 64, false);
+                 end.updateDimens(4, 5);
+                 end.addAnimation("platform3", 2, 1, 1, false);
                  end.setAnimation("platform3");
                  end.x = middle.x + middle.width;
                  end.y = lead.y;
+
                  plats.add(lead);
                  plats.add(middle);
                  plats.add(end);
+
+                 if (spawn <= 25) {
+                     Log.d("*****", "coffee spawn");
+                     Sprite coffee = new Sprite(pickUps);
+                     coffee.updateDimens(1, 3);
+                     coffee.addAnimation("coffee", 0, 1, 1, false);
+                     coffee.setAnimation("coffee");
+                     coffee.x = middle.x;
+                     coffee.y = middle.y - coffee.height;
+
+                     items.add(coffee);
+
+                 }
+                 else if (spawn <= 50){
+                     Log.d("*****", "pill spawn");
+                     Sprite pills = new Sprite(pickUps);
+                     pills.updateDimens(1, 3);
+                     pills.addAnimation("pills", 1, 1, 1, false);
+                     pills.setAnimation("pills");
+                     pills.x = middle.x;
+                     pills.y = middle.y - pills.height;
+                     items.add(pills);
+                 }
+                 else{
+                     Log.d("*****", "nothing");
+
+                 }
              }
          }
 
@@ -298,12 +340,24 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              Iterator<Sprite> i = plats.iterator();
              while (i.hasNext()){
                  Sprite p = i.next();
+
                  p.x -= 7;
 
                  if(p.x + p.width < 0){
                      i.remove();
                  }
              }
+         }
+         public void updateItems(){
+          Iterator<Sprite> i = items.iterator();
+          while(i.hasNext()){
+              Sprite t = i.next();
+              t.x -= 7;
+
+              if(t.x + t.width <0){
+                  i.remove();
+              }
+          }
          }
 
          @Override
@@ -354,6 +408,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              character.y += vy;
              character.update(deltaTime);
              updatePlatforms();
+             updateItems();
              updateCollision();
 
              pScore ++;
@@ -388,10 +443,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
              for (Sprite p: plats){
                 Collision.CollisionData collisionData = Collision.blockTestRectangle(character, p);
 
-                if(collisionData != null){
-                    character.x += collisionData.offsetX;
-                    character.y += collisionData.offsetY;
-                    break;
+                if (collisionData != null) {
+                        character.x += collisionData.offsetX;
+                        character.y += collisionData.offsetY;
+                        break;
                 }
              }
          }
@@ -407,6 +462,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                          background.draw(canvas);
                          for (Sprite p : plats) {
                              p.draw(canvas);
+                         }
+                         for (Sprite i : items){
+                             i.draw(canvas);
                          }
                          paint.setColor(Color.argb(255, 249, 129, 0));
                          paint.setTextSize(40);
