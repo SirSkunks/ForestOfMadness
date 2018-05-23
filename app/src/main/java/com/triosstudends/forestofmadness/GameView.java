@@ -117,7 +117,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             soundPool.play(levelTheme,1, 1,0,-1,1);
         }
     }
-
+/////////////
     class CharacterView extends SurfaceView implements Runnable {
 
          // System Elements
