@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +20,9 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     Button options;
 
 
-    SoundPool soundPool;
+    MediaPlayer player;
     boolean musicMuted = false;
-    int menuTheme = -1;
+
 
 
     @Override
@@ -31,20 +32,16 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
       musicMuted = Options.returnBool();
 
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                playMusic();
-            }
-        });
+
+      playMusic();
+
 
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
 
             descriptor = assetManager.openFd("titleTheme.mp3");
-            menuTheme = soundPool.load(descriptor, 0);
+
 
         } catch (IOException e) {
             //catches an exception.
@@ -84,7 +81,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     public void playMusic() {
 
         if(!musicMuted) {
-            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+            if(player == null){
+                player = MediaPlayer.create(this,R.raw.levelonebgm);
+
+                }
+            player.start();
         }
     }
 
@@ -92,13 +93,15 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     public void onPause(){
         super.onPause();
         musicMuted = Options.returnBool();
-        soundPool.autoPause();
+        player.release();
+        player = null;
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        soundPool.autoPause();
+       player.release();
+       player = null;
     }
 
 

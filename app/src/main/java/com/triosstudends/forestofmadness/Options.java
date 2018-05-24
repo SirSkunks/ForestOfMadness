@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,9 +30,8 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     public static boolean SeMuted = false;
     String Mmuted;
     String Smuted;
+    MediaPlayer player;
 
-    SoundPool soundPool;
-    int menuTheme = -1;
 
     /* testing git branch */
 
@@ -44,22 +44,17 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         editor = prefs.edit();
         //sets music muted to what is saved in preff
         musicMuted =prefs.getBoolean(Mmuted,musicMuted);
-        //Load Sounds Pool
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        //ensures soundpool is loaded before running playMusic()
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+
                 playMusic();
-            }
-        });
+
+
 
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
 
             descriptor = assetManager.openFd("titleTheme.mp3");
-            menuTheme = soundPool.load(descriptor, 0);
+
         }catch (IOException e){
             //catches an exception.
         }
@@ -117,13 +112,13 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
                     if(isChecked){
                         musicMuted = true;
                         editor.putBoolean(Mmuted,musicMuted);
-                        soundPool.autoPause();
+                        player.pause();
                         Toast.makeText(getApplicationContext(),"musicMuted",Toast.LENGTH_LONG).show();
                     }
                     if(!isChecked){
                         musicMuted = false;
                         editor.putBoolean(Mmuted,musicMuted);
-                        soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+                        playMusic();
                         Toast.makeText(getApplicationContext(),"musicOn",Toast.LENGTH_LONG).show();
 
                     }
@@ -159,7 +154,8 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     @Override
     public void onPause(){
         super.onPause();
-        soundPool.autoPause();
+        player.release();
+        player = null;
     }
     
     @Override
@@ -184,11 +180,12 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     public void playMusic(){
 
         if(!musicMuted) {
-            soundPool.play(menuTheme, 1, 1, 0, -1, 1);
+            if(player == null){
+                player = MediaPlayer.create(this,R.raw.levelonebgm);
+            }
+            player.start();
         }
-        else if(musicMuted){
-            soundPool.autoPause();
-        }
+
     }
 
     //function to return bool for muting Sound Effects
