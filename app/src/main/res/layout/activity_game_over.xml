@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameView">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/restart"
+            style="@android:style/Widget.Holo.Light.Button"
+            android:layout_width="83dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/main"
+            android:layout_marginStart="199dp"
+            android:background="#B380ccff"
+            android:text="Play again"
+            android:textColor="#ff0066"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/JadeHappy"
+            android:layout_width="108dp"
+            android:layout_height="123dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="118dp"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/happy" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="168dp" />
+
+        <TextView
+            android:id="@+id/TriOS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="21dp"
+            android:layout_marginEnd="37dp"
+            android:layout_marginRight="37dp"
+            android:text="TriOS 2018"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/main"
+            style="@android:style/Widget.Holo.Light.Button"
+            android:layout_width="83dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="65dp"
+            android:layout_marginEnd="196dp"
+            android:background="#B380ccff"
+            android:text="Main menu"
+            android:textColor="#ff0066"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/GameOver2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="26dp"
+            android:background="#B380ccff"
+            android:text="Game Over!"
+            android:textColor="#ff0066"
+            android:textSize="33sp"
+            app:fontFamily="@font/coralines_cat" />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
