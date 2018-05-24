@@ -29,10 +29,11 @@ public class Sprite {
     private final Bitmap bitmap;
     private int srcX = 0;
     private int srcY = 0;
+    Rect hitBox;
 
     // Animations
     private HashMap<String, Animation> animations;
-    private Animation currentAnimation = null;
+    Animation currentAnimation = null;
     private int currentFrame = 0;
     private long currentFrameTime = 0;
     private long frameTime = 0;
@@ -45,6 +46,8 @@ public class Sprite {
 
         width = bitmap.getWidth() / sheet_cols;
         height = bitmap.getHeight() / sheet_rows;
+
+        //hitBox = new Rect();
 
         updateChar();
 
@@ -92,6 +95,12 @@ public class Sprite {
     }
 
     public boolean setAnimation(String name){
+        if (currentAnimation != null){
+            if (currentAnimation.animationName == name) {
+                return true;
+            }
+        }
+
         currentAnimation = animations.get(name);
         if(currentAnimation == null){
             currentFrame = 0;
