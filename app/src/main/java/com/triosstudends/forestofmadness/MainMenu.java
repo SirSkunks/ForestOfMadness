@@ -33,9 +33,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
       musicMuted = Options.returnBool();
 
 
-      playMusic();
-
-
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -93,8 +90,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     public void onPause(){
         super.onPause();
         musicMuted = Options.returnBool();
-        player.release();
-        player = null;
+       if(player != null){
+           player.release();
+           player = null;
+       }
+
     }
 
     @Override

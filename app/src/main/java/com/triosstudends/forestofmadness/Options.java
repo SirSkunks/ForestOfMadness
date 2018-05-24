@@ -45,7 +45,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         //sets music muted to what is saved in preff
         musicMuted =prefs.getBoolean(Mmuted,musicMuted);
 
-                playMusic();
+
 
 
 
@@ -154,8 +154,10 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     @Override
     public void onPause(){
         super.onPause();
-        player.release();
-        player = null;
+        if(player != null){
+            player.release();
+            player = null;
+        }
     }
     
     @Override

@@ -48,6 +48,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     private int getHit;
     private int pickUp;
     boolean musicMuted = false;
+    boolean effectsMuted = false;
     int pScore = 0;
     int pHealth = 2000;
     int currentHP = pHealth;
@@ -63,23 +64,19 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         preferences = getSharedPreferences(dataName, MODE_PRIVATE);
         editor = preferences.edit();
         musicMuted = Options.returnBool();
+        effectsMuted = Options.returnBool2();
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 
-                playMusic();
 
 
-        try{
-            AssetManager assetManager = getAssets();
-            AssetFileDescriptor descriptor;
 
-            descriptor = assetManager.openFd("levelOneBgm.ogg");
-            jump = soundPool.load(this,R.raw.jump,1);
-            getHit = soundPool.load(this,R.raw.gethit,1);
-            pickUp = soundPool.load(this,R.raw.powerup,1);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
 
+            jump = soundPool.load(this, R.raw.jump,1);
+            getHit = soundPool.load(this, R.raw.gethit,1);
+            pickUp = soundPool.load(this, R.raw.powerup,1);
+
+
+        //soundPool.play(jump,1,1,1,0,1);
         characterView = new CharacterView(this);
         setContentView(characterView);
         paint = new Paint();
@@ -98,8 +95,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         super.onPause();
         characterView.pause();
         soundPool.autoPause();
-        player.release();
-        player = null;
+        if(player != null){
+            player.release();
+            player = null;
+        }
     }
 
     @Override
@@ -393,7 +392,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     else {
                         if (!isJumping) {
                             isJumping = true;
-                            soundPool.play(jump,1,1,0,0,1);
+
                             character.setAnimation("jumpRight");
                         }
                     }
@@ -431,6 +430,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
             if (isJumping) {
                 vy = -28;
+                if(!effectsMuted) {
+                    soundPool.play(jump, 1, 1, 1, 0, 1);
+                }
                 isJumping = false;
             }
 
@@ -495,7 +497,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     if(s.currentAnimation.animationName == "coffee"){
                         if(currentHP > 0 || currentHP < pHealth){
                             currentHP += 100;
-                            soundPool.play(pickUp,1,1,0,0,1);
+                            if(!effectsMuted) {
+                                soundPool.play(pickUp, 1, 1, 0, 0, 1);
+                            }
                             if(currentHP >= pHealth){
                                 currentHP = pHealth;
                             }
@@ -504,7 +508,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     if(s.currentAnimation.animationName == "pills"){
                         if (currentHP > 0 || currentHP < pHealth){
                             currentHP -= 50;
-                            soundPool.play(getHit,1,1,0,0,1);
+                            if(!effectsMuted) {
+                                soundPool.play(getHit, 1, 1, 0, 0, 1);
+                            }
                         }
                     }
                     i.remove();
