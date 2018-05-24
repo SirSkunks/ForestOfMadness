@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,10 +42,13 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     Canvas canvas;
     Paint paint;
 
-
+    MediaPlayer player;
     private SoundPool soundPool;
-    int levelTheme = -1;
+    private int jump;
+    private int getHit;
+    private int pickUp;
     boolean musicMuted = false;
+    boolean effectsMuted = false;
     int pScore = 0;
     int pHealth = 2000;
     int currentHP = pHealth;
@@ -60,23 +64,14 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         preferences = getSharedPreferences(dataName, MODE_PRIVATE);
         editor = preferences.edit();
         musicMuted = Options.returnBool();
+        effectsMuted = Options.returnBool2();
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                playMusic();
-            }
-        });
-        try{
-            AssetManager assetManager = getAssets();
-            AssetFileDescriptor descriptor;
 
-            descriptor = assetManager.openFd("levelOneBgm.ogg");
-            levelTheme = soundPool.load(descriptor, 0);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        jump = soundPool.load(this, R.raw.jump,1);
+        getHit = soundPool.load(this, R.raw.gethit,1);
+        pickUp = soundPool.load(this, R.raw.powerup,1);
 
+        //soundPool.play(jump,1,1,1,0,1);
         characterView = new CharacterView(this);
         setContentView(characterView);
         paint = new Paint();
@@ -86,6 +81,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     protected void onDestroy(){
         super.onDestroy();
         soundPool.release();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
     }
 
     @Override
@@ -93,6 +92,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         super.onPause();
         characterView.pause();
         soundPool.autoPause();
+        if(player != null){
+            player.release();
+            player = null;
+        }
     }
 
     @Override
@@ -108,7 +111,10 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
     }
     public void playMusic(){
         if(!musicMuted){
-            soundPool.play(levelTheme,1, 1,0,-1,1);
+            if(player == null){
+                player = MediaPlayer.create(this,R.raw.levelonebgm);
+            }
+            player.start();
         }
     }
 
@@ -258,7 +264,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 if(items.size() <= 1) {
 
                     if (spawn <= 15) {
-                        Log.d("*****", "coffee spawn");
                         Sprite coffee = new Sprite(pickUps);
                         coffee.updateDimens(1, 3);
                         coffee.addAnimation("coffee", 0, 1, 1, false);
@@ -269,7 +274,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                         items.add(coffee);
 
                     } else if (spawn <= 45) {
-                        Log.d("*****", "pill spawn");
                         Sprite pills = new Sprite(pickUps);
                         pills.updateDimens(1, 3);
                         pills.addAnimation("pills", 1, 1, 1, false);
@@ -310,7 +314,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 plats.add(end);
 
                 if (spawn <= 25) {
-                    Log.d("*****", "coffee spawn");
                     Sprite coffee = new Sprite(pickUps);
                     coffee.updateDimens(1, 3);
                     coffee.addAnimation("coffee", 0, 1, 1, false);
@@ -320,7 +323,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     items.add(coffee);
                 }
                 else if (spawn <= 50){
-                    Log.d("*****", "pill spawn");
                     Sprite pills = new Sprite(pickUps);
                     pills.updateDimens(1, 3);
                     pills.addAnimation("pills", 1, 1, 1, false);
@@ -328,10 +330,6 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     pills.x = middle.x;
                     pills.y = middle.y - pills.height;
                     items.add(pills);
-                }
-                else{
-                    Log.d("*****", "nothing");
-
                 }
             }
         }
@@ -366,6 +364,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             float y = event.getY();
 
             switch (event.getAction() & MotionEvent.ACTION_MASK){
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    x = event.getX(event.getActionIndex());
+                    y = event.getY(event.getActionIndex());
                 case MotionEvent.ACTION_DOWN:
                     // Check to see if the user touches within the left button
                     if (x < (buttonLeft.x + buttonLeft.width) && y >= buttonLeft.y) {
@@ -387,6 +388,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                         }
                     }
                     break;
+                case MotionEvent.ACTION_POINTER_UP:
+                    x = event.getX(event.getActionIndex());
+                    y = event.getY(event.getActionIndex());
                 case MotionEvent.ACTION_UP:
                     // Stop character movement when
                     if(x < (buttonLeft.x + buttonLeft.width) && y >= buttonLeft.y) {
@@ -420,6 +424,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
             if (isJumping) {
                 vy = -28;
+                if(!effectsMuted) {
+                    soundPool.play(jump, 1, 1, 1, 0, 1);
+                }
                 isJumping = false;
             }
 
@@ -480,10 +487,12 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 Collision.CollisionData collisionData = Collision.blockTestRectangle(character, s);
 
                 if(collisionData != null){
-                    Log.d("*****", "Item removed " + i);
                     if(s.currentAnimation.animationName == "coffee"){
                         if(currentHP > 0 || currentHP < pHealth){
                             currentHP += 100;
+                            if(!effectsMuted) {
+                                soundPool.play(pickUp, 1, 1, 0, 0, 1);
+                            }
                             if(currentHP >= pHealth){
                                 currentHP = pHealth;
                             }
@@ -492,6 +501,9 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     if(s.currentAnimation.animationName == "pills"){
                         if (currentHP > 0 || currentHP < pHealth){
                             currentHP -= 50;
+                            if(!effectsMuted) {
+                                soundPool.play(getHit, 1, 1, 0, 0, 1);
+                            }
                         }
                     }
                     i.remove();
