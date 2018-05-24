@@ -45,7 +45,7 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         //sets music muted to what is saved in preff
         musicMuted =prefs.getBoolean(Mmuted,musicMuted);
 
-//
+
 
 
 

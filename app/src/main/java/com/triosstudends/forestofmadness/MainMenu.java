@@ -74,7 +74,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
         playMusic();
     }
-//
+
     public void playMusic() {
 //
         if(!musicMuted) {

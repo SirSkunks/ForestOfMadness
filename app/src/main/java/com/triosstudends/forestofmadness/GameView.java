@@ -412,7 +412,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             }
             return true;
         }
-//
+
         public void updateLogic(){
 
             if(movingRight){
