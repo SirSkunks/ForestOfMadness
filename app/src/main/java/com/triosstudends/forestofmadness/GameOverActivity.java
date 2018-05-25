@@ -29,10 +29,12 @@ public class GameOverActivity extends AppCompatActivity implements View.OnClickL
         switch (v.getId()){
             case R.id.restart:
                 startActivity(new Intent(GameOverActivity.this, GameView.class));
+                finish();
                 break;
             case R.id.main:
                 Intent m = new Intent(this, MainMenu.class);
                 startActivity(m);
+                finish();
                 break;
         }
 

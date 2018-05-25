@@ -7,8 +7,21 @@ public class Collision {
     public static CollisionData blockTestRectangle(Sprite s1, Sprite s2){
         String collisionSide = "";
 
-        Rect r1 = new Rect(s1.x, s1.y, s1.x + s1.width, s1.y + s1.height);
-        Rect r2 = new Rect(s2.x, s2.y, s2.x + s2.width, s2.y + s2.height);
+        Rect r1;
+        if(s1.hitBox !=null){
+            r1 = s1.hitBox;
+        }
+        else {
+            r1 = new Rect(s1.x, s1.y, s1.x + s1.width, s1.y + s1.height);
+        }
+
+        Rect r2;
+        if(s2.hitBox != null){
+            r2 = s2.hitBox;
+        }
+        else {
+            r2 = new Rect(s2.x, s2.y, s2.x + s2.width, s2.y + s2.height);
+        }
         int dx = r1.centerX() - r2.centerX();
         int dy = r1.centerY() - r2.centerY();
 

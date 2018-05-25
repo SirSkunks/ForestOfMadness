@@ -1,6 +1,7 @@
 package com.triosstudends.forestofmadness;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -10,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -142,6 +144,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         boolean isJumping = false;
         boolean movingLeft = false;
         boolean movingRight = false;
+        boolean isGrounded = true;
 
         int vx = 0;
         int vy = 0;
@@ -197,7 +200,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             character.addAnimation("runRight", 0, 8, 7, true);
             character.addAnimation("runLeft", 15, 8, 7, true);
             character.addAnimation("idle", 8, 1, 1, true);
-            character.addAnimation("jumpRight", 12, 1, 1, false);
+            character.addAnimation("jumpRight", 12, 1, 7, true);
+            character.setHitBox(0.5f, 1.0f);
             character.setAnimation("idle");
 
             character.x = 0 - character.width / 2;
@@ -207,7 +211,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             start.updateDimens(4, 5);
             start.addAnimation("platform1", 0, 1, 1, false);
             start.setAnimation("platform1");
-            start.x = 0;
+            start.x = 20;
             start.y = screenHeight /2 - 3;
 
             Sprite midsect = new Sprite(world);
@@ -313,7 +317,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 plats.add(middle);
                 plats.add(end);
 
-                if (spawn <= 25) {
+                if (spawn <= 20) {
                     Sprite coffee = new Sprite(pickUps);
                     coffee.updateDimens(1, 3);
                     coffee.addAnimation("coffee", 0, 1, 1, false);
@@ -322,7 +326,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     coffee.y = middle.y - coffee.height;
                     items.add(coffee);
                 }
-                else if (spawn <= 50){
+                else if (spawn <= 40){
                     Sprite pills = new Sprite(pickUps);
                     pills.updateDimens(1, 3);
                     pills.addAnimation("pills", 1, 1, 1, false);
@@ -339,7 +343,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             while (i.hasNext()){
                 Sprite p = i.next();
 
-                p.x -= 7;
+                p.x -= 15;
 
                 if(p.x + p.width < 0){
                     i.remove();
@@ -350,7 +354,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             Iterator<Sprite> i = items.iterator();
             while(i.hasNext()){
                 Sprite t = i.next();
-                t.x -= 7;
+                t.x -= 15;
 
                 if(t.x + t.width <0){
                     i.remove();
@@ -370,19 +374,16 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 case MotionEvent.ACTION_DOWN:
                     // Check to see if the user touches within the left button
                     if (x < (buttonLeft.x + buttonLeft.width) && y >= buttonLeft.y) {
-                        /*vx = -5;
-                        character.setAnimation("runLeft");*/
                         movingLeft = true;
                     }
                     // Check to see if the user touches within the right button
                     else if(x >= buttonRight.x && y >= buttonRight.y){
-                       /* vx = 5;
-                        character.setAnimation("runRight");*/
+
                        movingRight = true;
                     }
                     // Check to see if the user touches anywhere but the buttons
                     else {
-                        if (!isJumping) {
+                        if (!isJumping && isGrounded) {
                             isJumping = true;
                             character.setAnimation("jumpRight");
                         }
@@ -410,11 +411,11 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
         public void updateLogic(){
 
             if(movingRight){
-                vx = 7;
+                vx = 15;
                 character.setAnimation("runRight");
             }
             else if(movingLeft){
-                vx = -7;
+                vx = -15;
                 character.setAnimation("runLeft");
             }
             else{
@@ -423,11 +424,12 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
             }
 
             if (isJumping) {
-                vy = -28;
+                vy = -30;
                 if(!effectsMuted) {
                     soundPool.play(jump, 1, 1, 1, 0, 1);
                 }
                 isJumping = false;
+                isGrounded = false;
             }
 
             vy += gravity;
@@ -441,7 +443,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
             pScore ++;
             currentHP --;
-            if(plats.size() % 3 == 0 && plats.size() < 6){
+            if(plats.size() % 3 == 0 && plats.size() < 9){
                 platformGeneration();
             }
         }
@@ -450,8 +452,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
 
             //if the character touches the bottom of the screen stop the movement
             if(character.y + character.height > screenHeight){
-                vy = 0;
-                character.y = screenHeight - character.height;
+                currentHP = 0;
             }
             // if the character touches the top
             else if(character.y <= 0){
@@ -476,6 +477,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     character.y += collisionData.offsetY;
                     if(collisionData.collisionSide == "bottom"){
                         vy = 0;
+                        isGrounded = true;
                     }
                     break;
                 }
@@ -500,7 +502,7 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                     }
                     if(s.currentAnimation.animationName == "pills"){
                         if (currentHP > 0 || currentHP < pHealth){
-                            currentHP -= 50;
+                            currentHP -= 100;
                             if(!effectsMuted) {
                                 soundPool.play(getHit, 1, 1, 0, 0, 1);
                             }
@@ -526,7 +528,8 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                         for (Sprite i : items){
                             i.draw(canvas);
                         }
-                        paint.setColor(Color.argb(255, 249, 129, 0));
+
+                        paint.setColor(Color.argb(255, 0, 0, 0));
                         paint.setTextSize(40);
                         canvas.drawText("Score: " + pScore, 10, 50, paint);
                         canvas.drawText("Health: " + currentHP + " / " + pHealth, 300, 50, paint);
@@ -568,8 +571,11 @@ public class GameView extends AppCompatActivity implements View.OnClickListener 
                 updateLogic();
                 drawCanvas();
                 controlFPS();
-                if (currentHP == 0){
+                if (currentHP <= 0){
                     running = false;
+                    Intent gameOver = new Intent(GameView.this, GameOverActivity.class);
+                    startActivity(gameOver);
+                    finish();
                 }
             }
         }

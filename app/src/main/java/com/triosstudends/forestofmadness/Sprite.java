@@ -29,7 +29,9 @@ public class Sprite {
     private final Bitmap bitmap;
     private int srcX = 0;
     private int srcY = 0;
-    Rect hitBox;
+    Rect hitBox = null;
+    float hbScaleX;
+    float hbScaleY;
 
     // Animations
     private HashMap<String, Animation> animations;
@@ -47,11 +49,10 @@ public class Sprite {
         width = bitmap.getWidth() / sheet_cols;
         height = bitmap.getHeight() / sheet_rows;
 
-        //hitBox = new Rect();
-
         updateChar();
 
         animations = new HashMap<>();
+
     }
 
     public void updateDimens(int sheet_rows, int sheet_cols) {
@@ -81,6 +82,7 @@ public class Sprite {
                 updateChar();
             }
         }
+        updateHitBox();
     }
 
     public void draw(Canvas canvas){
@@ -88,6 +90,29 @@ public class Sprite {
         Rect dstRect = new Rect(x, y, (int)(x + width * scale), (int)(y + height * scale));
 
         canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+    }
+
+    public void updateHitBox(){
+        int left = x - (int)(width * hbScaleX / 2 - width / 2);
+        int top = y - (int)(height * hbScaleY / 2 - height / 2);
+        int right = left + ((int)(width * hbScaleX));
+        int bottom = top + ((int)(height * hbScaleY));
+
+        if(hitBox == null) {
+            hitBox = new Rect(left, top, right, bottom);
+        }
+        else{
+            hitBox.left = left;
+            hitBox.right = right;
+            hitBox.top = top;
+            hitBox.bottom = bottom;
+        }
+    }
+
+    public void setHitBox(float scaleX, float scaleY){
+       hbScaleX = scaleX;
+       hbScaleY = scaleY;
+       updateHitBox();
     }
 
     public void addAnimation(String name, int startFrame, int frameCount, int fps, boolean looping){
