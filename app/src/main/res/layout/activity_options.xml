@@ -9,11 +9,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="609dp"
-        android:layout_height="454dp"
-        app:srcCompat="@drawable/background"
-        tools:layout_editor_absoluteX="-14dp"
-        tools:layout_editor_absoluteY="-31dp" />
+        android:layout_width="690dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background" />
 
     <Button
         android:id="@+id/mainMenu"
@@ -33,15 +35,17 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="243dp"
-        android:layout_marginLeft="224dp"
-        android:layout_marginRight="243dp"
-        android:layout_marginStart="224dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="16dp"
         android:text="Options"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="36sp"
+        app:fontFamily="@font/coralines_cat"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

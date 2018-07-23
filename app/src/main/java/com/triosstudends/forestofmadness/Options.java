@@ -32,7 +32,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     String Smuted;
     MediaPlayer player;
 
-
     /* testing git branch */
 
     @Override
@@ -45,10 +44,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
         //sets music muted to what is saved in preff
         musicMuted =prefs.getBoolean(Mmuted,musicMuted);
 
-
-
-
-
         try {
             AssetManager assetManager = getAssets();
             AssetFileDescriptor descriptor;
@@ -59,14 +54,11 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             //catches an exception.
         }
 
-
-
         //Sets Onclick listner for Button To return to menu
         mainMenu = findViewById(R.id.mainMenu);
         mainMenu.setOnClickListener(this);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         initControls();
-
 
     }
     private void initControls(){
@@ -115,15 +107,12 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
                         player.pause();
                         Toast.makeText(getApplicationContext(),"musicMuted",Toast.LENGTH_LONG).show();
                     }
-                    if(!isChecked){
+                    else {
                         musicMuted = false;
                         editor.putBoolean(Mmuted,musicMuted);
                         playMusic();
                         Toast.makeText(getApplicationContext(),"musicOn",Toast.LENGTH_LONG).show();
-
                     }
-
-
                 }
 
 
@@ -140,8 +129,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
                       SeMuted = false;
                       Toast.makeText(getApplicationContext(),"SoundEffectOn",Toast.LENGTH_LONG).show();
                   }
-
-
               }
 
 
@@ -163,7 +150,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
     @Override
     public void onResume(){
         super.onResume();
-
        playMusic();
     }
 
@@ -187,7 +173,6 @@ public class Options extends AppCompatActivity  implements View.OnClickListener{
             }
             player.start();
         }
-
     }
 
     //function to return bool for muting Sound Effects
